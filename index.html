@@ -276,6 +276,88 @@
         .bar-self { background: var(--green); }
         .bar-api { background: var(--accent); }
 
+        /* Hardware amortize toggle */
+        .hw-amortize-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .hw-amortize-header label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .hw-amortize-header input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .amortize-disabled {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .hw-section-divider {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin: 0.75rem 0 0.5rem;
+        }
+
+        /* Model role assignment */
+        .role-select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .role-card h4 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.4rem;
+        }
+
+        .role-card .role-cost {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .role-card .role-detail {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
         footer {
             text-align: center;
             padding: 2rem 0;
@@ -329,15 +411,28 @@
 
         <div class="hardware-section">
             <h3>Optional: Your Hardware Costs</h3>
-            <div class="hardware-grid">
+            <div class="hardware-grid" style="margin-bottom:0.9rem;">
                 <div class="hw-field">
                     <label>Hardware cost ($)</label>
                     <input type="number" id="hwCost" value="0" min="0" step="100">
                 </div>
                 <div class="hw-field">
-                    <label>Amortize over (months)</label>
-                    <input type="number" id="hwMonths" value="36" min="1" step="1">
+                    <div class="hw-amortize-header">
+                        <input type="checkbox" id="amortizeEnabled" onchange="toggleAmortize()">
+                        <label for="amortizeEnabled">Amortize (over months)</label>
+                    </div>
+                    <div id="amortizeFields" class="amortize-disabled">
+                        <input type="number" id="hwMonths" value="36" min="1" step="1"
+                            style="width:100%;padding:0.4rem 0.6rem;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.9rem;">
+                    </div>
                 </div>
+            </div>
+
+            <div class="hw-amortize-header">
+                <input type="checkbox" id="elecEnabled" onchange="toggleElec()">
+                <label for="elecEnabled">Include electricity cost</label>
+            </div>
+            <div id="elecFields" class="hardware-grid amortize-disabled">
                 <div class="hw-field">
                     <label>Power draw (watts)</label>
                     <input type="number" id="hwWatts" value="0" min="0" step="10">
@@ -364,19 +459,26 @@
                         <th>Input Tokens</th>
                         <th>Output Tokens</th>
                         <th>Requests</th>
+                        <th>Role <span style="font-weight:normal;text-transform:none;letter-spacing:0;font-size:0.75rem;color:var(--text-muted)">— optional</span></th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
+            <div id="roleBreakdown"></div>
 
             <h2 class="section-title">What It Would Cost via API</h2>
+            <p style="color:var(--text-muted);margin-bottom:1rem;font-size:0.9rem;">
+                Estimated total cost at each provider's per-million-token rates. Assign roles in the usage table above to filter.
+            </p>
             <table id="costTable">
                 <thead>
                     <tr>
                         <th>Your Model</th>
                         <th>API Equivalent</th>
                         <th>Provider</th>
-                        <th>API Cost</th>
+                        <th>$/M <span style="font-weight:normal;text-transform:none;letter-spacing:0;font-size:0.7rem">in</span></th>
+                        <th>$/M <span style="font-weight:normal;text-transform:none;letter-spacing:0;font-size:0.7rem">out</span></th>
+                        <th>Total Cost</th>
                         <th>Visual</th>
                     </tr>
                 </thead>
@@ -384,18 +486,24 @@
             </table>
 
             <h2 class="section-title">Closed-Source Comparison</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">
-                What if you'd used your total token volume on popular closed-source models instead?
+            <p id="closedSubtitle" style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">
+                Add closed-source models to compare what your usage would cost.
             </p>
-            <table id="closedTable">
+            <div id="closedAddRow" style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem;">
+                <select id="closedModelPicker" class="role-select" style="flex:1;max-width:300px;padding:0.4rem 0.6rem;">
+                </select>
+                <button class="btn-secondary" style="padding:0.4rem 1rem;font-size:0.85rem;" onclick="addClosedModel()">+ Add</button>
+            </div>
+            <table id="closedTable" style="display:none;">
                 <thead>
                     <tr>
                         <th>Model</th>
                         <th>Provider</th>
+                        <th>Role</th>
                         <th>Input Cost</th>
                         <th>Output Cost</th>
                         <th>Total Cost</th>
-                        <th>Visual</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -524,16 +632,290 @@
         return (inputTokens / 1_000_000) * inputPer1M + (outputTokens / 1_000_000) * outputPer1M;
     }
 
-    function getHardwareMonthlyCost() {
-        const hwCost = parseFloat(document.getElementById('hwCost').value) || 0;
-        const hwMonths = parseFloat(document.getElementById('hwMonths').value) || 36;
-        const hwWatts = parseFloat(document.getElementById('hwWatts').value) || 0;
-        const hwElec = parseFloat(document.getElementById('hwElec').value) || 0.12;
-        const hwHours = parseFloat(document.getElementById('hwHours').value) || 8;
+    function toggleAmortize() {
+        document.getElementById('amortizeFields').classList.toggle('amortize-disabled',
+            !document.getElementById('amortizeEnabled').checked);
+    }
 
-        const depreciationPerMonth = hwCost / hwMonths;
-        const elecPerMonth = (hwWatts / 1000) * hwHours * 30 * hwElec;
-        return depreciationPerMonth + elecPerMonth;
+    function toggleElec() {
+        document.getElementById('elecFields').classList.toggle('amortize-disabled',
+            !document.getElementById('elecEnabled').checked);
+    }
+
+    function getHardwareCostForPeriod(days) {
+        let hw = 0;
+        const hwCost = parseFloat(document.getElementById('hwCost').value) || 0;
+        if (hwCost > 0) {
+            if (document.getElementById('amortizeEnabled').checked) {
+                const months = parseFloat(document.getElementById('hwMonths').value);
+                if (months > 0) hw = (hwCost / months / 30) * days;
+            } else {
+                hw = hwCost; // lump sum — full hardware cost
+            }
+        }
+        let elec = 0;
+        if (document.getElementById('elecEnabled').checked) {
+            const watts = parseFloat(document.getElementById('hwWatts').value) || 0;
+            const rate = parseFloat(document.getElementById('hwElec').value) || 0.12;
+            const hours = parseFloat(document.getElementById('hwHours').value) || 8;
+            elec = (watts / 1000) * hours * days * rate;
+        }
+        return { hardware: hw, electricity: elec, total: hw + elec };
+    }
+
+    const ROLES = ['Unassigned', 'Primary', 'Heartbeat', 'Background', 'Other'];
+    let currentAnalysisData = [];
+    let closedSourceRoles = {};   // model name -> role
+    let closedSourceAdded = [];   // model names the user has added
+    let analysisState = { numDays: 1, totalInput: 0, totalOutput: 0 };
+
+    function getTokensByRole(role) {
+        const models = currentAnalysisData.filter(m => m.role === role);
+        return {
+            input: models.reduce((s, m) => s + m.input, 0),
+            output: models.reduce((s, m) => s + m.output, 0),
+        };
+    }
+
+    function setRole(index, role) {
+        currentAnalysisData[index].role = role;
+        updateDerivedViews();
+    }
+
+    // Returns models that have assigned roles, or all models if none assigned
+    function getActiveModels() {
+        const assigned = currentAnalysisData.filter(m => m.role !== 'Unassigned');
+        return assigned.length > 0 ? assigned : currentAnalysisData;
+    }
+
+    function updateDerivedViews() {
+        renderRoleBreakdown();
+        renderCostTable();
+        renderClosedTable();
+        renderSummaryCards();
+    }
+
+    function renderRoleBreakdown() {
+        const container = document.getElementById('roleBreakdown');
+        const assigned = currentAnalysisData.filter(m => m.role !== 'Unassigned');
+        if (assigned.length === 0) { container.innerHTML = ''; return; }
+
+        const byRole = {};
+        assigned.forEach(m => {
+            if (!byRole[m.role]) byRole[m.role] = { cost: 0, tokens: 0, models: [] };
+            byRole[m.role].cost += m.cost;
+            byRole[m.role].tokens += m.input + m.output;
+            byRole[m.role].models.push({
+                local: m.localModel,
+                api: m.apiModel ? `${m.apiModel} (${m.apiProvider})` : null,
+            });
+        });
+
+        const cards = Object.entries(byRole).map(([role, d]) => {
+            const modelLines = d.models.map(m =>
+                m.api ? `${m.local} <span style="color:var(--text-muted)">→</span> ${m.api}` : m.local
+            ).join('<br>');
+            return `
+            <div class="role-card">
+                <h4>${role}</h4>
+                <div>
+                    <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;">API Equivalent</div>
+                    <div class="role-cost">${fmtUSD(d.cost)}</div>
+                </div>
+                <div class="role-detail" style="margin-top:0.5rem;">${fmt(d.tokens)} tokens</div>
+                <div class="role-detail">${modelLines}</div>
+            </div>`;
+        }).join('');
+        container.innerHTML = `<div class="role-cards">${cards}</div>`;
+    }
+
+    function renderCostTable() {
+        const active = getActiveModels();
+        const hasRoles = currentAnalysisData.some(m => m.role !== 'Unassigned');
+        const models = active.filter(r => r.apiModel);
+        const maxCost = Math.max(...models.map(m => m.cost), 0);
+
+        const costTbody = document.querySelector('#costTable tbody');
+        costTbody.innerHTML = '';
+        models.forEach(r => {
+            const row = document.createElement('tr');
+            const barWidth = maxCost > 0 ? Math.max(2, (r.cost / maxCost) * 200) : 0;
+            const noteHtml = r.note ? `<br><span style="color:var(--text-muted);font-size:0.75rem">${r.note}</span>` : '';
+            const roleTag = hasRoles && r.role !== 'Unassigned'
+                ? ` <span style="color:var(--accent);font-size:0.75rem;font-weight:normal">[${r.role}]</span>` : '';
+            const mapping = MODEL_MAP[r.localModel];
+            const inRate = mapping ? '$' + mapping.inputPer1M.toFixed(2) : '-';
+            const outRate = mapping ? '$' + mapping.outputPer1M.toFixed(2) : '-';
+            row.innerHTML = `
+                <td><strong>${r.localModel}</strong>${roleTag}</td>
+                <td>${r.apiModel}${noteHtml}</td>
+                <td>${r.apiProvider}</td>
+                <td class="mono" style="color:var(--text-muted)">${inRate}</td>
+                <td class="mono" style="color:var(--text-muted)">${outRate}</td>
+                <td class="mono"><strong>${fmtUSD(r.cost)}</strong></td>
+                <td><div class="bar bar-api" style="width:${barWidth}px"></div></td>
+            `;
+            costTbody.appendChild(row);
+        });
+
+        // Update the subtitle
+        const subtitle = document.querySelector('#costTable').previousElementSibling;
+        if (subtitle && subtitle.tagName === 'P') {
+            const scope = hasRoles ? `Showing ${models.length} assigned model${models.length !== 1 ? 's' : ''} (${fmt(active.reduce((s, m) => s + m.input + m.output, 0))} tokens).` : '';
+            subtitle.innerHTML = scope
+                ? `Estimated total cost at each provider's per-million-token rates. ${scope}`
+                : `Estimated total cost at each provider's per-million-token rates. Assign roles in the usage table above to filter.`;
+        }
+    }
+
+    function populateClosedPicker() {
+        const picker = document.getElementById('closedModelPicker');
+        const already = new Set(closedSourceAdded);
+        picker.innerHTML = CLOSED_SOURCE
+            .filter(m => !already.has(m.model))
+            .map(m => `<option value="${m.model}">${m.model} (${m.provider})</option>`)
+            .join('');
+        // Disable add button if nothing left to add
+        picker.closest('div').querySelector('button').disabled = picker.options.length === 0;
+    }
+
+    function addClosedModel() {
+        const picker = document.getElementById('closedModelPicker');
+        const model = picker.value;
+        if (!model || closedSourceAdded.includes(model)) return;
+        closedSourceAdded.push(model);
+        populateClosedPicker();
+        renderClosedTable();
+    }
+
+    function removeClosedModel(model) {
+        closedSourceAdded = closedSourceAdded.filter(m => m !== model);
+        delete closedSourceRoles[model];
+        populateClosedPicker();
+        renderClosedTable();
+    }
+
+    function setClosedRole(model, role) {
+        closedSourceRoles[model] = role;
+        renderClosedTable();
+    }
+
+    function renderClosedTable() {
+        const table = document.getElementById('closedTable');
+        const active = getActiveModels();
+        const hasRoles = currentAnalysisData.some(m => m.role !== 'Unassigned');
+        const scopeInput = active.reduce((s, m) => s + m.input, 0);
+        const scopeOutput = active.reduce((s, m) => s + m.output, 0);
+
+        const assignedRoles = [...new Set(currentAnalysisData.filter(m => m.role !== 'Unassigned').map(m => m.role))];
+        const roleOpts = ['Unassigned', ...assignedRoles];
+
+        if (closedSourceAdded.length === 0) {
+            table.style.display = 'none';
+            document.getElementById('closedSubtitle').textContent = 'Add closed-source models to compare what your usage would cost.';
+            return;
+        }
+        table.style.display = '';
+
+        const closedTbody = table.querySelector('tbody');
+        closedTbody.innerHTML = '';
+        let maxClosedCost = 0;
+
+        const rows = closedSourceAdded.map(name => {
+            const m = CLOSED_SOURCE.find(c => c.model === name);
+            if (!m) return null;
+            const role = closedSourceRoles[m.model] || 'Unassigned';
+            let useInput, useOutput;
+            if (role !== 'Unassigned') {
+                const rt = getTokensByRole(role);
+                useInput = rt.input; useOutput = rt.output;
+            } else {
+                useInput = scopeInput; useOutput = scopeOutput;
+            }
+            const inputCost = (useInput / 1_000_000) * m.inputPer1M;
+            const outputCost = (useOutput / 1_000_000) * m.outputPer1M;
+            const total = inputCost + outputCost;
+            if (total > maxClosedCost) maxClosedCost = total;
+            return { ...m, inputCost, outputCost, total, role, useInput, useOutput };
+        }).filter(Boolean);
+
+        rows.forEach(r => {
+            const row = document.createElement('tr');
+            const barWidth = Math.max(2, (r.total / maxClosedCost) * 250);
+            const tag = r.total < 5 ? 'tag-free' : r.total < 50 ? 'tag-cheap' : 'tag-expensive';
+            const options = assignedRoles.length > 0
+                ? roleOpts.map(ro =>
+                    `<option value="${ro}"${r.role === ro ? ' selected' : ''}>${ro === 'Unassigned' ? 'All tokens' : ro}</option>`
+                ).join('')
+                : '<option value="Unassigned">No roles assigned</option>';
+            const tokenNote = r.role !== 'Unassigned'
+                ? `<br><span style="color:var(--text-muted);font-size:0.7rem">${fmt(r.useInput + r.useOutput)} tokens</span>` : '';
+            row.innerHTML = `
+                <td><strong>${r.model}</strong></td>
+                <td>${r.provider}</td>
+                <td><select class="role-select" onchange="setClosedRole('${r.model}', this.value)"${assignedRoles.length === 0 ? ' title="Assign roles in the Model Usage table first"' : ''}>${options}</select>${tokenNote}</td>
+                <td class="mono">${fmtUSD(r.inputCost)}</td>
+                <td class="mono">${fmtUSD(r.outputCost)}</td>
+                <td class="mono"><strong>${fmtUSD(r.total)}</strong> <span class="tag ${tag}">${r.total < 5 ? 'cheap' : r.total < 50 ? 'moderate' : 'expensive'}</span></td>
+                <td><button onclick="removeClosedModel('${r.model}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem;padding:0 0.3rem;" title="Remove">&times;</button></td>
+            `;
+            closedTbody.appendChild(row);
+        });
+
+        // Subtitle
+        const subtitle = document.getElementById('closedSubtitle');
+        const anyRoled = Object.values(closedSourceRoles).some(r => r !== 'Unassigned');
+        if (anyRoled) {
+            subtitle.textContent = 'Costs calculated per assigned role token volume. "All tokens" rows use the full scope.';
+        } else if (hasRoles) {
+            subtitle.textContent = `Using assigned models' token volume (${fmt(scopeInput + scopeOutput)}).`;
+        } else {
+            subtitle.textContent = `Using total token volume (${fmt(scopeInput + scopeOutput)}). Assign roles in the usage table above to enable per-role pricing here.`;
+        }
+    }
+
+    function renderSummaryCards() {
+        const active = getActiveModels();
+        const hasRoles = currentAnalysisData.some(m => m.role !== 'Unassigned');
+        const scopeInput = active.reduce((s, m) => s + m.input, 0);
+        const scopeOutput = active.reduce((s, m) => s + m.output, 0);
+        const scopeTokens = scopeInput + scopeOutput;
+        const scopeApiCost = active.reduce((s, m) => s + m.cost, 0);
+
+        const hwCosts = getHardwareCostForPeriod(analysisState.numDays);
+        const hwForPeriod = hwCosts.total; // always the full hardware cost — it's a fixed expense
+
+        const hwSub = [];
+        if (hwCosts.hardware > 0) hwSub.push(document.getElementById('amortizeEnabled').checked ? 'hardware (amortized)' : 'hardware (lump sum)');
+        if (hwCosts.electricity > 0) hwSub.push('electricity');
+        const hwSubText = hwSub.length > 0 ? hwSub.join(' + ') : '';
+
+        const scopeLabel = hasRoles ? ' (assigned models)' : '';
+
+        const cards = document.getElementById('summaryCards');
+        cards.innerHTML = `
+            <div class="card">
+                <h3>Total Tokens${scopeLabel}</h3>
+                <div class="value neutral">${fmt(scopeTokens)}</div>
+                <div class="sub">${fmt(scopeInput)} input + ${fmt(scopeOutput)} output</div>
+                <div class="sub">${analysisState.numDays} day${analysisState.numDays > 1 ? 's' : ''} of usage</div>
+            </div>
+            <div class="card">
+                <h3>Equivalent API Cost</h3>
+                <div class="value cost">${fmtUSD(scopeApiCost)}</div>
+                <div class="sub">Using cheapest matching providers</div>
+            </div>
+            <div class="card">
+                <h3>Your Self-Hosting Cost</h3>
+                <div class="value ${hwForPeriod > 0 ? 'neutral' : 'savings'}">${hwForPeriod > 0 ? fmtUSD(hwForPeriod) : 'Free*'}</div>
+                <div class="sub">${hwForPeriod > 0 ? hwSubText : '*No hardware or electricity costs entered'}</div>
+            </div>
+            <div class="card">
+                <h3>${scopeApiCost > hwForPeriod ? 'You Saved' : 'API Would Save'}</h3>
+                <div class="value ${scopeApiCost > hwForPeriod ? 'savings' : 'cost'}">${fmtUSD(Math.abs(scopeApiCost - hwForPeriod))}</div>
+                <div class="sub">${scopeApiCost > hwForPeriod ? 'by self-hosting' : 'vs self-hosting'}</div>
+            </div>
+        `;
     }
 
     function analyze() {
@@ -556,7 +938,6 @@
         } else if (data.modelUsage) {
             modelUsage = data.modelUsage;
         } else if (data.sessions) {
-            // Try to aggregate from sessions
             const map = {};
             data.sessions.forEach(s => {
                 const mu = s.usage && s.usage.modelUsage ? s.usage.modelUsage : [];
@@ -572,7 +953,6 @@
             modelUsage = Object.values(map);
         }
 
-        // Filter out zero-token and non-ollama entries
         modelUsage = modelUsage.filter(m =>
             (m.totals ? m.totals.totalTokens : m.totalTokens || 0) > 0 &&
             m.provider !== 'openclaw'
@@ -584,136 +964,53 @@
             return;
         }
 
-        const totalInput = data.totals ? data.totals.input : modelUsage.reduce((s, m) => s + (m.totals ? m.totals.input : 0), 0);
-        const totalOutput = data.totals ? data.totals.output : modelUsage.reduce((s, m) => s + (m.totals ? m.totals.output : 0), 0);
-        const totalTokens = totalInput + totalOutput;
+        analysisState.totalInput = data.totals ? data.totals.input : modelUsage.reduce((s, m) => s + (m.totals ? m.totals.input : 0), 0);
+        analysisState.totalOutput = data.totals ? data.totals.output : modelUsage.reduce((s, m) => s + (m.totals ? m.totals.output : 0), 0);
+        analysisState.numDays = 1;
+        if (data.daily) analysisState.numDays = data.daily.length;
+        else if (data.aggregates && data.aggregates.daily) analysisState.numDays = data.aggregates.daily.length;
 
-        // Calculate days of usage
-        let numDays = 1;
-        if (data.daily) {
-            numDays = data.daily.length;
-        } else if (data.aggregates && data.aggregates.daily) {
-            numDays = data.aggregates.daily.length;
-        }
+        // Preserve existing role assignments across re-analysis
+        const prevRoles = {};
+        currentAnalysisData.forEach(m => { prevRoles[m.localModel] = m.role; });
+        currentAnalysisData = [];
 
-        // Usage table
-        const usageTbody = document.querySelector('#usageTable tbody');
-        usageTbody.innerHTML = '';
         modelUsage.forEach(m => {
             const input = m.totals ? m.totals.input : 0;
             const output = m.totals ? m.totals.output : 0;
             const count = m.count || 0;
+            const mapping = MODEL_MAP[m.model];
+            const cost = mapping ? calcCost(input, output, mapping.inputPer1M, mapping.outputPer1M) : 0;
+            currentAnalysisData.push({
+                localModel: m.model, provider: m.provider,
+                input, output, count, cost,
+                apiModel: mapping ? mapping.apiModel : null,
+                apiProvider: mapping ? mapping.provider : null,
+                note: mapping ? mapping.note : null,
+                role: prevRoles[m.model] || 'Unassigned',
+            });
+        });
+
+        // Usage table (with role dropdown column)
+        const usageTbody = document.querySelector('#usageTable tbody');
+        usageTbody.innerHTML = '';
+        currentAnalysisData.forEach((m, i) => {
+            const roleOptions = ROLES.map(r =>
+                `<option value="${r}"${m.role === r ? ' selected' : ''}>${r}</option>`
+            ).join('');
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><strong>${m.model}</strong><br><span style="color:var(--text-muted);font-size:0.8rem">${m.provider}</span></td>
-                <td class="mono">${fmt(input)}</td>
-                <td class="mono">${fmt(output)}</td>
-                <td class="mono">${count.toLocaleString()}</td>
+                <td><strong>${m.localModel}</strong><br><span style="color:var(--text-muted);font-size:0.8rem">${m.provider}</span></td>
+                <td class="mono">${fmt(m.input)}</td>
+                <td class="mono">${fmt(m.output)}</td>
+                <td class="mono">${m.count.toLocaleString()}</td>
+                <td><select class="role-select" onchange="setRole(${i}, this.value)">${roleOptions}</select></td>
             `;
             usageTbody.appendChild(row);
         });
 
-        // API cost table
-        const costTbody = document.querySelector('#costTable tbody');
-        costTbody.innerHTML = '';
-        let totalApiCost = 0;
-        let maxModelCost = 0;
-
-        const costRows = [];
-        modelUsage.forEach(m => {
-            const input = m.totals ? m.totals.input : 0;
-            const output = m.totals ? m.totals.output : 0;
-            const mapping = MODEL_MAP[m.model];
-
-            if (!mapping) {
-                costRows.push({ localModel: m.model, apiModel: 'No mapping', provider: '-', cost: 0, input, output });
-                return;
-            }
-
-            const cost = calcCost(input, output, mapping.inputPer1M, mapping.outputPer1M);
-            totalApiCost += cost;
-            if (cost > maxModelCost) maxModelCost = cost;
-
-            costRows.push({
-                localModel: m.model,
-                apiModel: mapping.apiModel,
-                provider: mapping.provider,
-                cost,
-                note: mapping.note,
-                input,
-                output,
-            });
-        });
-
-        costRows.forEach(r => {
-            const row = document.createElement('tr');
-            const barWidth = maxModelCost > 0 ? Math.max(2, (r.cost / maxModelCost) * 200) : 0;
-            const noteHtml = r.note ? `<br><span style="color:var(--text-muted);font-size:0.75rem">${r.note}</span>` : '';
-            row.innerHTML = `
-                <td><strong>${r.localModel}</strong></td>
-                <td>${r.apiModel}${noteHtml}</td>
-                <td>${r.provider}</td>
-                <td class="mono"><strong>${fmtUSD(r.cost)}</strong></td>
-                <td><div class="bar bar-api" style="width:${barWidth}px"></div></td>
-            `;
-            costTbody.appendChild(row);
-        });
-
-        // Closed-source comparison
-        const closedTbody = document.querySelector('#closedTable tbody');
-        closedTbody.innerHTML = '';
-        let maxClosedCost = 0;
-        const closedRows = CLOSED_SOURCE.map(m => {
-            const inputCost = (totalInput / 1_000_000) * m.inputPer1M;
-            const outputCost = (totalOutput / 1_000_000) * m.outputPer1M;
-            const total = inputCost + outputCost;
-            if (total > maxClosedCost) maxClosedCost = total;
-            return { ...m, inputCost, outputCost, total };
-        });
-
-        closedRows.forEach(r => {
-            const row = document.createElement('tr');
-            const barWidth = Math.max(2, (r.total / maxClosedCost) * 250);
-            const tag = r.total < 5 ? 'tag-free' : r.total < 50 ? 'tag-cheap' : 'tag-expensive';
-            row.innerHTML = `
-                <td><strong>${r.model}</strong></td>
-                <td>${r.provider}</td>
-                <td class="mono">${fmtUSD(r.inputCost)}</td>
-                <td class="mono">${fmtUSD(r.outputCost)}</td>
-                <td class="mono"><strong>${fmtUSD(r.total)}</strong> <span class="tag ${tag}">${r.total < 5 ? 'cheap' : r.total < 50 ? 'moderate' : 'expensive'}</span></td>
-                <td><div class="bar bar-api" style="width:${barWidth}px"></div></td>
-            `;
-            closedTbody.appendChild(row);
-        });
-
-        // Summary cards
-        const hwMonthly = getHardwareMonthlyCost();
-        const hwForPeriod = (hwMonthly / 30) * numDays;
-
-        const cards = document.getElementById('summaryCards');
-        cards.innerHTML = `
-            <div class="card">
-                <h3>Total Tokens</h3>
-                <div class="value neutral">${fmt(totalTokens)}</div>
-                <div class="sub">${fmt(totalInput)} input + ${fmt(totalOutput)} output</div>
-                <div class="sub">${numDays} day${numDays > 1 ? 's' : ''} of usage</div>
-            </div>
-            <div class="card">
-                <h3>Equivalent API Cost</h3>
-                <div class="value cost">${fmtUSD(totalApiCost)}</div>
-                <div class="sub">Using cheapest matching providers</div>
-            </div>
-            <div class="card">
-                <h3>Your Self-Hosting Cost</h3>
-                <div class="value savings">${hwForPeriod > 0 ? fmtUSD(hwForPeriod) : 'Free*'}</div>
-                <div class="sub">${hwForPeriod > 0 ? fmtUSD(hwMonthly) + '/mo (hw + electricity)' : '*Excluding hardware & electricity'}</div>
-            </div>
-            <div class="card">
-                <h3>${totalApiCost > hwForPeriod ? 'You Saved' : 'API Would Save'}</h3>
-                <div class="value ${totalApiCost > hwForPeriod ? 'savings' : 'cost'}">${fmtUSD(Math.abs(totalApiCost - hwForPeriod))}</div>
-                <div class="sub">${totalApiCost > hwForPeriod ? 'by self-hosting' : 'vs self-hosting'}</div>
-            </div>
-        `;
+        populateClosedPicker();
+        updateDerivedViews();
 
         document.getElementById('results').style.display = 'block';
         document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
