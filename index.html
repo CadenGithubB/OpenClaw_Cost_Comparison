@@ -358,6 +358,26 @@
             margin-top: 0.2rem;
         }
 
+        /* Projection panel */
+        .projection-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .projection-section h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .projection-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
         /* Custom model mapping */
         .unmapped-tag {
             display: inline-block;
@@ -513,6 +533,7 @@
 
         <div id="results">
             <div class="summary-cards" id="summaryCards"></div>
+            <div id="projectionPanel"></div>
 
             <h2 class="section-title">Your Model Usage</h2>
             <table id="usageTable">
@@ -764,6 +785,7 @@
 
     const ROLES = ['Unassigned', 'Primary', 'Heartbeat', 'Background', 'Other'];
     let currentAnalysisData = [];
+    let projectionRange = 365;     // days to project (365, 730, 1095)
     let customModelMap = {};      // model name -> {apiModel, provider, inputPer1M, outputPer1M}
     let closedSourceRoles = {};   // model name -> role
     let closedSourceAdded = [];   // model names the user has added
@@ -797,6 +819,7 @@
         renderCostTable();
         renderClosedTable();
         renderSummaryCards();
+        renderProjectionPanel();
     }
 
     function renderRoleBreakdown() {
@@ -1039,9 +1062,190 @@
             <div class="card">
                 <h3>${scopeApiCost > hwForPeriod ? 'You Saved' : 'API Would Save'}</h3>
                 <div class="value ${scopeApiCost > hwForPeriod ? 'savings' : 'cost'}">${fmtUSD(Math.abs(scopeApiCost - hwForPeriod))}</div>
-                <div class="sub">${scopeApiCost > hwForPeriod ? 'by self-hosting' : 'vs self-hosting'}</div>
+                <div class="sub">${scopeApiCost > hwForPeriod ? 'by self-hosting' : 'vs self-hosting'} (${analysisState.numDays}d actual)</div>
+                ${(() => {
+                    const days = analysisState.numDays;
+                    if (days < 1) return '';
+                    const dailyApi = scopeApiCost / days;
+                    const projApi = dailyApi * projectionRange;
+                    const projHw = getHardwareCostForPeriod(projectionRange).total;
+                    const projDiff = projApi - projHw;
+                    const rangeLabel = projectionRange <= 365 ? '1yr' : projectionRange <= 730 ? '2yr' : '3yr';
+                    return `
+                    <div style="margin-top:0.6rem;padding-top:0.5rem;border-top:1px solid var(--border);font-size:0.8rem;">
+                        <div style="color:var(--text-muted);text-transform:uppercase;font-size:0.7rem;letter-spacing:0.04em;margin-bottom:0.3rem;">Projected at ${rangeLabel}</div>
+                        <div style="display:flex;justify-content:space-between;color:var(--text-muted);"><span>API</span><span style="color:var(--red)">${fmtUSD(projApi)}</span></div>
+                        <div style="display:flex;justify-content:space-between;color:var(--text-muted);"><span>Self-hosting</span><span style="color:${projHw > 0 ? 'var(--accent)' : 'var(--green)'}">${projHw > 0 ? fmtUSD(projHw) : 'Free'}</span></div>
+                        <div style="display:flex;justify-content:space-between;margin-top:0.2rem;font-weight:600;"><span>${projDiff > 0 ? 'You save' : 'API saves'}</span><span style="color:${projDiff > 0 ? 'var(--green)' : 'var(--red)'}">${fmtUSD(Math.abs(projDiff))}</span></div>
+                    </div>`;
+                })()}
             </div>
         `;
+    }
+
+    function niceYTicks(maxVal, count) {
+        if (maxVal <= 0) return [0];
+        const rough = maxVal / count;
+        const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+        const r = rough / mag;
+        const nice = r <= 1.5 ? mag : r <= 3 ? 2 * mag : r <= 7 ? 5 * mag : 10 * mag;
+        const ticks = [];
+        for (let v = 0; v <= maxVal + nice * 0.5; v += nice) ticks.push(v);
+        return ticks;
+    }
+
+    function setProjectionRange(days) {
+        projectionRange = days;
+        renderSummaryCards();
+        renderProjectionPanel();
+    }
+
+    function renderProjectionPanel() {
+        const panel = document.getElementById('projectionPanel');
+        const days = analysisState.numDays;
+        if (days < 1 || currentAnalysisData.length === 0) { panel.innerHTML = ''; return; }
+
+        const active = getActiveModels();
+        const scopeApiCost = active.reduce((s, m) => s + m.cost, 0);
+        const scopeTokens = active.reduce((s, m) => s + m.input + m.output, 0);
+        const dailyApiCost = scopeApiCost / days;
+        const dailyTokens = scopeTokens / days;
+
+        // Self-hosting cost model
+        const amortizeOn = document.getElementById('amortizeEnabled').checked;
+        const elecOn = document.getElementById('elecEnabled').checked;
+        const hwCost = parseFloat(document.getElementById('hwCost').value) || 0;
+        let hwLumpSum = 0, hwPerDay = 0;
+        if (hwCost > 0) {
+            if (amortizeOn) {
+                const months = parseFloat(document.getElementById('hwMonths').value);
+                if (months > 0) hwPerDay = hwCost / months / 30;
+            } else {
+                hwLumpSum = hwCost;
+            }
+        }
+        let elecPerDay = 0;
+        if (elecOn) {
+            const watts = parseFloat(document.getElementById('hwWatts').value) || 0;
+            const rate = parseFloat(document.getElementById('hwElec').value) || 0.12;
+            const hours = parseFloat(document.getElementById('hwHours').value) || 8;
+            elecPerDay = (watts / 1000) * hours * rate;
+        }
+        const selfPerDay = hwPerDay + elecPerDay;
+
+        const maxDays = projectionRange;
+        const apiAt = d => dailyApiCost * d;
+        const selfAt = d => hwLumpSum + selfPerDay * d;
+        const maxCost = Math.max(apiAt(maxDays), selfAt(maxDays), 1);
+
+        // SVG layout
+        const W = 700, H = 300;
+        const pad = { top: 25, right: 20, bottom: 35, left: 65 };
+        const gw = W - pad.left - pad.right;
+        const gh = H - pad.top - pad.bottom;
+        const yTicks = niceYTicks(maxCost, 5);
+        const yMax = yTicks[yTicks.length - 1];
+        const x = d => pad.left + (d / maxDays) * gw;
+        const y = c => pad.top + gh - (c / yMax) * gh;
+
+        // Grid + Y labels
+        let grid = '', yLabels = '';
+        yTicks.forEach(v => {
+            grid += `<line x1="${pad.left}" y1="${y(v)}" x2="${W - pad.right}" y2="${y(v)}" stroke="var(--border)" stroke-width="0.5"/>`;
+            yLabels += `<text x="${pad.left - 8}" y="${y(v) + 4}" text-anchor="end" fill="var(--text-muted)" font-size="11">${fmtUSD(v)}</text>`;
+        });
+
+        // X axis marks based on range
+        let xMarks;
+        if (maxDays <= 365) {
+            xMarks = [
+                { d: 30, label: '1mo' }, { d: 90, label: '3mo' },
+                { d: 180, label: '6mo' }, { d: 270, label: '9mo' },
+                { d: 365, label: '1yr' },
+            ];
+        } else if (maxDays <= 730) {
+            xMarks = [
+                { d: 90, label: '3mo' }, { d: 180, label: '6mo' },
+                { d: 365, label: '1yr' }, { d: 545, label: '18mo' },
+                { d: 730, label: '2yr' },
+            ];
+        } else {
+            xMarks = [
+                { d: 180, label: '6mo' }, { d: 365, label: '1yr' },
+                { d: 730, label: '2yr' }, { d: 1095, label: '3yr' },
+            ];
+        }
+        let xLabels = '';
+        xMarks.forEach(t => {
+            grid += `<line x1="${x(t.d)}" y1="${pad.top}" x2="${x(t.d)}" y2="${H - pad.bottom}" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="4,4"/>`;
+            xLabels += `<text x="${x(t.d)}" y="${H - pad.bottom + 18}" text-anchor="middle" fill="var(--text-muted)" font-size="11">${t.label}</text>`;
+        });
+
+        // Lines
+        const apiLine = `M${x(0)},${y(0)} L${x(maxDays)},${y(apiAt(maxDays))}`;
+        const selfLine = `M${x(0)},${y(selfAt(0))} L${x(maxDays)},${y(selfAt(maxDays))}`;
+
+        // Dots at key points
+        let dots = '';
+        xMarks.forEach(t => {
+            dots += `<circle cx="${x(t.d)}" cy="${y(apiAt(t.d))}" r="3" fill="var(--red)"/>`;
+            if (hwLumpSum > 0 || selfPerDay > 0) dots += `<circle cx="${x(t.d)}" cy="${y(selfAt(t.d))}" r="3" fill="var(--green)"/>`;
+        });
+
+        // Break-even point
+        let crossover = '';
+        if (dailyApiCost !== selfPerDay) {
+            const crossDay = hwLumpSum / (dailyApiCost - selfPerDay);
+            if (crossDay > 0 && crossDay <= maxDays) {
+                const cx = x(crossDay), cy = y(apiAt(crossDay));
+                const label = crossDay < 30 ? `${Math.round(crossDay)}d` : `${(crossDay / 30).toFixed(1)}mo`;
+                crossover = `
+                    <circle cx="${cx}" cy="${cy}" r="5" fill="var(--orange)" stroke="var(--bg)" stroke-width="2"/>
+                    <text x="${cx}" y="${cy - 12}" text-anchor="middle" fill="var(--orange)" font-size="11" font-weight="600">Break-even: ${label}</text>`;
+            }
+        }
+
+        // Legend
+        const ly = pad.top + 5;
+        const legend = `
+            <line x1="${pad.left + 10}" y1="${ly}" x2="${pad.left + 30}" y2="${ly}" stroke="var(--red)" stroke-width="2.5"/>
+            <text x="${pad.left + 35}" y="${ly + 4}" fill="var(--text)" font-size="11">API cost</text>
+            <line x1="${pad.left + 100}" y1="${ly}" x2="${pad.left + 120}" y2="${ly}" stroke="var(--green)" stroke-width="2.5"/>
+            <text x="${pad.left + 125}" y="${ly + 4}" fill="var(--text)" font-size="11">Self-hosting</text>`;
+
+        // End-of-range summary
+        const apiEnd = apiAt(maxDays), selfEnd = selfAt(maxDays);
+        const diff = apiEnd - selfEnd;
+        const rangeLabel = maxDays <= 365 ? '1 year' : maxDays <= 730 ? '2 years' : '3 years';
+        const summaryText = diff > 0
+            ? `At ${rangeLabel}: API ${fmtUSD(apiEnd)} vs Self-hosting ${selfEnd > 0 ? fmtUSD(selfEnd) : 'Free'} — you save ${fmtUSD(diff)} self-hosting`
+            : `At ${rangeLabel}: API ${fmtUSD(apiEnd)} vs Self-hosting ${fmtUSD(selfEnd)} — API saves ${fmtUSD(Math.abs(diff))}`;
+
+        // Range toggle
+        const ranges = [
+            { d: 365, label: '1 Year' },
+            { d: 730, label: '2 Years' },
+            { d: 1095, label: '3 Years' },
+        ];
+        const rangeToggle = ranges.map(r =>
+            `<button onclick="setProjectionRange(${r.d})" style="padding:0.25rem 0.6rem;font-size:0.8rem;border-radius:4px;border:1px solid ${projectionRange === r.d ? 'var(--accent)' : 'var(--border)'};background:${projectionRange === r.d ? 'var(--accent)' : 'var(--bg)'};color:${projectionRange === r.d ? '#fff' : 'var(--text-muted)'};cursor:pointer;">${r.label}</button>`
+        ).join('');
+
+        panel.innerHTML = `
+        <div class="projection-section">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem;">
+                <h3>Cost Projection</h3>
+                <div style="display:flex;gap:0.35rem;">${rangeToggle}</div>
+            </div>
+            <div class="projection-subtitle">Based on ${days} day${days > 1 ? 's' : ''} of usage (${fmt(Math.round(dailyTokens))} tokens/day avg)</div>
+            <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;">
+                ${grid}${yLabels}${xLabels}
+                <path d="${apiLine}" fill="none" stroke="var(--red)" stroke-width="2.5"/>
+                <path d="${selfLine}" fill="none" stroke="var(--green)" stroke-width="2.5" ${hwLumpSum === 0 && selfPerDay === 0 ? 'stroke-dasharray="6,4"' : ''}/>
+                ${dots}${crossover}${legend}
+            </svg>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-top:0.5rem;">${summaryText}</div>
+        </div>`;
     }
 
     function renderUsageTable() {
