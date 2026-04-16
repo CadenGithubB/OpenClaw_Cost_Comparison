@@ -689,48 +689,70 @@
             outputPer1M: 0.90,
         },
 
-        // Llama family
-        'llama3:8b': { apiModel: 'Llama 3 8B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.06 },
-        'llama3': { apiModel: 'Llama 3 8B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.06 },
-        'llama3:70b': { apiModel: 'Llama 3 70B', provider: 'DeepInfra', inputPer1M: 0.35, outputPer1M: 0.40 },
-        'llama3.1:8b': { apiModel: 'Llama 3.1 8B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.05 },
-        'llama3.1': { apiModel: 'Llama 3.1 8B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.05 },
+        // Llama 3 family
+        'llama3:8b': { apiModel: 'Llama 3 8B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.04 },
+        'llama3': { apiModel: 'Llama 3 8B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.04 },
+        'llama3:70b': { apiModel: 'Llama 3 70B', provider: 'DeepInfra', inputPer1M: 0.10, outputPer1M: 0.10 },
+
+        // Llama 3.1 family
+        'llama3.1:8b': { apiModel: 'Llama 3.1 8B', provider: 'DeepInfra', inputPer1M: 0.02, outputPer1M: 0.05 },
+        'llama3.1': { apiModel: 'Llama 3.1 8B', provider: 'DeepInfra', inputPer1M: 0.02, outputPer1M: 0.05 },
         'llama3.1:70b': { apiModel: 'Llama 3.1 70B', provider: 'DeepInfra', inputPer1M: 0.23, outputPer1M: 0.40 },
-        'llama3.2:1b': { apiModel: 'Llama 3.2 1B', provider: 'Together AI', inputPer1M: 0.01, outputPer1M: 0.01 },
-        'llama3.2:3b': { apiModel: 'Llama 3.2 3B', provider: 'Together AI', inputPer1M: 0.02, outputPer1M: 0.02 },
-        'llama3.3:70b': { apiModel: 'Llama 3.3 70B', provider: 'DeepInfra', inputPer1M: 0.20, outputPer1M: 0.20 },
-        'llama3.3': { apiModel: 'Llama 3.3 70B', provider: 'DeepInfra', inputPer1M: 0.20, outputPer1M: 0.20 },
-        'llama4:scout': { apiModel: 'Llama 4 Scout', provider: 'Together AI', inputPer1M: 0.18, outputPer1M: 0.33 },
+        'llama3.1:405b': { apiModel: 'Llama 3.1 405B', provider: 'DeepInfra', inputPer1M: 0.80, outputPer1M: 0.80 },
+
+        // Llama 3.2 family
+        'llama3.2:1b': { apiModel: 'Llama 3.2 1B', provider: 'Fireworks AI', inputPer1M: 0.10, outputPer1M: 0.10 },
+        'llama3.2:3b': { apiModel: 'Llama 3.2 3B', provider: 'Together AI', inputPer1M: 0.06, outputPer1M: 0.06 },
+
+        // Llama 3.3 family
+        'llama3.3:70b': { apiModel: 'Llama 3.3 70B', provider: 'DeepInfra', inputPer1M: 0.10, outputPer1M: 0.32 },
+        'llama3.3': { apiModel: 'Llama 3.3 70B', provider: 'DeepInfra', inputPer1M: 0.10, outputPer1M: 0.32 },
+
+        // Llama 4 family
+        'llama4:scout': { apiModel: 'Llama 4 Scout', provider: 'DeepInfra', inputPer1M: 0.08, outputPer1M: 0.30 },
+        'llama4:maverick': { apiModel: 'Llama 4 Maverick', provider: 'DeepInfra', inputPer1M: 0.15, outputPer1M: 0.60 },
 
         // Mistral family
-        'mistral:7b': { apiModel: 'Mistral 7B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.03 },
-        'mistral': { apiModel: 'Mistral 7B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.03 },
-        'mixtral:8x7b': { apiModel: 'Mixtral 8x7B', provider: 'DeepInfra', inputPer1M: 0.24, outputPer1M: 0.24 },
-        'mistral-nemo': { apiModel: 'Mistral Nemo 12B', provider: 'DeepInfra', inputPer1M: 0.10, outputPer1M: 0.10 },
-        'mistral-small': { apiModel: 'Mistral Small 24B', provider: 'DeepInfra', inputPer1M: 0.08, outputPer1M: 0.08 },
+        'mistral:7b': { apiModel: 'Mistral 7B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.055 },
+        'mistral': { apiModel: 'Mistral 7B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.055 },
+        'mixtral:8x7b': { apiModel: 'Mixtral 8x7B', provider: 'Mistral AI', inputPer1M: 0.14, outputPer1M: 0.42 },
+        'mistral-nemo': { apiModel: 'Mistral Nemo 12B', provider: 'DeepInfra', inputPer1M: 0.02, outputPer1M: 0.04 },
+        'mistral-small': { apiModel: 'Mistral Small 24B', provider: 'Mistral AI', inputPer1M: 0.10, outputPer1M: 0.30 },
 
         // Phi family
-        'phi3:mini': { apiModel: 'Phi-3 Mini', provider: 'DeepInfra', inputPer1M: 0.05, outputPer1M: 0.05 },
-        'phi3:medium': { apiModel: 'Phi-3 Medium', provider: 'DeepInfra', inputPer1M: 0.14, outputPer1M: 0.14 },
-        'phi4': { apiModel: 'Phi-4 14B', provider: 'DeepInfra', inputPer1M: 0.04, outputPer1M: 0.08 },
+        'phi3:mini': { apiModel: 'Phi-3 Mini', provider: 'OpenRouter', inputPer1M: 0.10, outputPer1M: 0.10 },
+        'phi3:medium': { apiModel: 'Phi-3 Medium', provider: 'OpenRouter', inputPer1M: 0.17, outputPer1M: 0.68 },
+        'phi4': { apiModel: 'Phi-4 14B', provider: 'OpenRouter', inputPer1M: 0.065, outputPer1M: 0.14 },
 
         // DeepSeek family
-        'deepseek-coder:6.7b': { apiModel: 'DeepSeek Coder 6.7B', provider: 'DeepInfra', inputPer1M: 0.06, outputPer1M: 0.06 },
-        'deepseek-r1:7b': { apiModel: 'DeepSeek R1 Distill 7B', provider: 'DeepInfra', inputPer1M: 0.02, outputPer1M: 0.07 },
-        'deepseek-r1:70b': { apiModel: 'DeepSeek R1 Distill 70B', provider: 'DeepInfra', inputPer1M: 0.23, outputPer1M: 0.69 },
-        'deepseek-r1': { apiModel: 'DeepSeek R1 Distill 7B', provider: 'DeepInfra', inputPer1M: 0.02, outputPer1M: 0.07 },
+        'deepseek-coder:6.7b': { apiModel: 'DeepSeek Coder 7B', provider: 'DeepSeek', inputPer1M: 0.20, outputPer1M: 0.20 },
+        'deepseek-coder:33b': { apiModel: 'DeepSeek Coder 33B', provider: 'DeepSeek', inputPer1M: 0.80, outputPer1M: 0.80 },
+        'deepseek-v3': { apiModel: 'DeepSeek V3', provider: 'DeepSeek', inputPer1M: 0.014, outputPer1M: 0.028, note: 'DeepSeek API direct; 3rd-party providers much more expensive' },
+        'deepseek-r1:1.5b': { apiModel: 'DeepSeek R1 Distill 1.5B', provider: 'DeepSeek', inputPer1M: 0.18, outputPer1M: 0.18 },
+        'deepseek-r1:7b': { apiModel: 'DeepSeek R1 Distill 7B', provider: 'DeepSeek', inputPer1M: 0.20, outputPer1M: 0.20 },
+        'deepseek-r1:8b': { apiModel: 'DeepSeek R1 Distill Llama 8B', provider: 'DeepSeek', inputPer1M: 0.04, outputPer1M: 0.04 },
+        'deepseek-r1:14b': { apiModel: 'DeepSeek R1 Distill 14B', provider: 'DeepSeek', inputPer1M: 0.15, outputPer1M: 0.15 },
+        'deepseek-r1:32b': { apiModel: 'DeepSeek R1 Distill 32B', provider: 'DeepSeek', inputPer1M: 0.29, outputPer1M: 0.29 },
+        'deepseek-r1:70b': { apiModel: 'DeepSeek R1 Distill 70B', provider: 'DeepSeek', inputPer1M: 0.70, outputPer1M: 0.80 },
+        'deepseek-r1': { apiModel: 'DeepSeek R1 Distill 7B', provider: 'DeepSeek', inputPer1M: 0.20, outputPer1M: 0.20 },
 
         // CodeLlama family
-        'codellama:7b': { apiModel: 'Code Llama 7B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.03 },
-        'codellama': { apiModel: 'Code Llama 7B', provider: 'DeepInfra', inputPer1M: 0.03, outputPer1M: 0.03 },
-        'codellama:34b': { apiModel: 'Code Llama 34B', provider: 'Together AI', inputPer1M: 0.39, outputPer1M: 0.39 },
+        'codellama:7b': { apiModel: 'CodeLlama 7B', provider: 'Together AI', inputPer1M: 0.20, outputPer1M: 0.20 },
+        'codellama': { apiModel: 'CodeLlama 7B', provider: 'Together AI', inputPer1M: 0.20, outputPer1M: 0.20 },
+        'codellama:13b': { apiModel: 'CodeLlama 13B', provider: 'Together AI', inputPer1M: 0.22, outputPer1M: 0.22 },
+        'codellama:34b': { apiModel: 'CodeLlama 34B', provider: 'Fireworks AI', inputPer1M: 0.90, outputPer1M: 0.90 },
+        'codellama:70b': { apiModel: 'CodeLlama 70B', provider: 'Together AI', inputPer1M: 0.90, outputPer1M: 0.90 },
     };
 
     const CLOSED_SOURCE = [
         { model: 'GPT-4o-mini', provider: 'OpenAI', inputPer1M: 0.15, outputPer1M: 0.60 },
         { model: 'Gemini 2.5 Flash-Lite', provider: 'Google', inputPer1M: 0.10, outputPer1M: 0.40 },
+        { model: 'Gemini 3 Flash Preview', provider: 'Google', inputPer1M: 0.15, outputPer1M: 0.60 },
+        { model: 'Command R', provider: 'Cohere', inputPer1M: 0.15, outputPer1M: 0.60 },
         { model: 'Gemini 2.5 Flash', provider: 'Google', inputPer1M: 0.30, outputPer1M: 2.50 },
+        { model: 'Command R+', provider: 'Cohere', inputPer1M: 2.50, outputPer1M: 10.00 },
         { model: 'Claude Haiku 4.5', provider: 'Anthropic', inputPer1M: 1.00, outputPer1M: 5.00 },
+        { model: 'Mistral Large 2', provider: 'Mistral AI', inputPer1M: 2.00, outputPer1M: 6.00 },
         { model: 'GPT-4o', provider: 'OpenAI', inputPer1M: 2.50, outputPer1M: 10.00 },
         { model: 'Gemini 2.5 Pro', provider: 'Google', inputPer1M: 1.25, outputPer1M: 10.00 },
         { model: 'Claude Sonnet 4.6', provider: 'Anthropic', inputPer1M: 3.00, outputPer1M: 15.00 },

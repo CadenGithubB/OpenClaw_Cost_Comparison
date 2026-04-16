@@ -2,13 +2,96 @@
   "_metadata": {
     "description": "LLM API pricing per million tokens, researched April 2026",
     "date_collected": "2026-04-15",
-    "notes": "Prices are per 1M tokens. Where input/output are the same, both values are listed identically. Prices reflect cheapest available provider for open-source models. Some Qwen 2.5 smaller sizes (3B) have limited API availability; nearest equivalents noted."
+    "notes": "Prices are per 1M tokens. Where input/output are the same, both values are listed identically. Prices reflect cheapest available provider for open-source models. Some smaller sizes have limited API availability; nearest equivalents noted."
   },
+
+  "open_source_models_llama": [
+    {
+      "provider": "Fireworks AI",
+      "model": "Llama 3.2 1B Instruct",
+      "parameters": "1B",
+      "input_per_1M_tokens": 0.10,
+      "output_per_1M_tokens": 0.10,
+      "notes": "Smallest Llama; Fireworks small-model tier"
+    },
+    {
+      "provider": "Together AI",
+      "model": "Llama 3.2 3B Instruct",
+      "parameters": "3B",
+      "input_per_1M_tokens": 0.06,
+      "output_per_1M_tokens": 0.06,
+      "notes": "Together AI serverless"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 3 8B Instruct",
+      "parameters": "8B",
+      "input_per_1M_tokens": 0.03,
+      "output_per_1M_tokens": 0.04,
+      "notes": "Previous generation 8B"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 3.1 8B Instruct",
+      "parameters": "8B",
+      "input_per_1M_tokens": 0.02,
+      "output_per_1M_tokens": 0.05,
+      "notes": "128K context"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 3 70B Instruct",
+      "parameters": "70B",
+      "input_per_1M_tokens": 0.10,
+      "output_per_1M_tokens": 0.10,
+      "notes": "Previous generation 70B"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 3.1 70B Instruct",
+      "parameters": "70B",
+      "input_per_1M_tokens": 0.23,
+      "output_per_1M_tokens": 0.40,
+      "notes": "128K context"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 3.1 405B Instruct",
+      "parameters": "405B",
+      "input_per_1M_tokens": 0.80,
+      "output_per_1M_tokens": 0.80,
+      "notes": "Largest open Llama model"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 3.3 70B Instruct",
+      "parameters": "70B",
+      "input_per_1M_tokens": 0.10,
+      "output_per_1M_tokens": 0.32,
+      "notes": "Improved 70B; cheaper than 3.1 70B on DeepInfra"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 4 Scout",
+      "parameters": "109B total (17B active, 16 experts MoE)",
+      "input_per_1M_tokens": 0.08,
+      "output_per_1M_tokens": 0.30,
+      "notes": "MoE architecture; very cost-effective for its capability"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Llama 4 Maverick",
+      "parameters": "400B total (17B active, 128 experts MoE)",
+      "input_per_1M_tokens": 0.15,
+      "output_per_1M_tokens": 0.60,
+      "notes": "MoE architecture; largest Llama 4 model"
+    }
+  ],
 
   "open_source_models_gemma": [
     {
       "provider": "Google AI Studio",
-      "model": "gemma-4-31b-it",
+      "model": "Gemma 4 31B",
       "parameters": "31B (dense)",
       "input_per_1M_tokens": 0.13,
       "output_per_1M_tokens": 0.38,
@@ -16,7 +99,7 @@
     },
     {
       "provider": "Google AI Studio",
-      "model": "gemma-4-26b-a4b-it",
+      "model": "Gemma 4 26B-A4B",
       "parameters": "26B (MoE, 4B active)",
       "input_per_1M_tokens": 0.08,
       "output_per_1M_tokens": 0.35,
@@ -24,15 +107,15 @@
     },
     {
       "provider": "Together AI",
-      "model": "gemma-4-31b",
+      "model": "Gemma 4 31B",
       "parameters": "31B (dense)",
       "input_per_1M_tokens": 0.20,
       "output_per_1M_tokens": 0.50,
       "notes": "Together AI serverless pricing"
     },
     {
-      "provider": "OpenRouter (multiple providers)",
-      "model": "gemma-3-27b-it",
+      "provider": "OpenRouter",
+      "model": "Gemma 3 27B",
       "parameters": "27B",
       "input_per_1M_tokens": 0.08,
       "output_per_1M_tokens": 0.16,
@@ -40,66 +123,34 @@
     },
     {
       "provider": "Together AI",
-      "model": "gemma-3n-e4b-it",
+      "model": "Gemma 3n E4B",
       "parameters": "~4B effective",
       "input_per_1M_tokens": 0.06,
       "output_per_1M_tokens": 0.12,
       "notes": "Smallest/cheapest Gemma option"
-    },
-    {
-      "provider": "OpenRouter",
-      "model": "gemma-2-27b-it",
-      "parameters": "27B",
-      "input_per_1M_tokens": 0.65,
-      "output_per_1M_tokens": 0.65,
-      "notes": "Older generation; limited provider availability (NextBit)"
     }
   ],
 
   "open_source_models_qwen": [
     {
       "provider": "DeepInfra",
-      "model": "Qwen2.5-7B-Instruct",
+      "model": "Qwen2.5 7B Instruct",
       "parameters": "7B",
       "input_per_1M_tokens": 0.03,
       "output_per_1M_tokens": 0.03,
       "notes": "DeepInfra bare-metal, cheapest provider"
     },
     {
-      "provider": "Together AI",
-      "model": "Qwen2.5-7B-Instruct-Turbo",
-      "parameters": "7B",
-      "input_per_1M_tokens": 0.30,
-      "output_per_1M_tokens": 0.30,
-      "notes": "Together AI serverless"
-    },
-    {
-      "provider": "Qwen API (via pricepertoken)",
-      "model": "Qwen2.5-7B-Instruct",
-      "parameters": "7B",
-      "input_per_1M_tokens": 0.04,
-      "output_per_1M_tokens": 0.10,
-      "notes": "Lowest known price across providers"
-    },
-    {
       "provider": "DeepInfra",
-      "model": "Qwen2.5-14B-Instruct",
+      "model": "Qwen2.5 14B Instruct",
       "parameters": "14B",
       "input_per_1M_tokens": 0.10,
       "output_per_1M_tokens": 0.10,
       "notes": "DeepInfra bare-metal"
     },
     {
-      "provider": "OpenRouter / various",
-      "model": "Qwen2.5-14B-Instruct",
-      "parameters": "14B",
-      "input_per_1M_tokens": 0.20,
-      "output_per_1M_tokens": 0.20,
-      "notes": "Typical multi-provider price"
-    },
-    {
-      "provider": "OpenRouter / various",
-      "model": "Qwen2.5-32B-Instruct",
+      "provider": "OpenRouter",
+      "model": "Qwen2.5 32B Instruct",
       "parameters": "32B",
       "input_per_1M_tokens": 0.90,
       "output_per_1M_tokens": 0.90,
@@ -107,128 +158,249 @@
     },
     {
       "provider": "DeepInfra",
-      "model": "Qwen2.5-72B-Instruct",
+      "model": "Qwen2.5 72B Instruct",
       "parameters": "72B",
       "input_per_1M_tokens": 0.23,
       "output_per_1M_tokens": 0.23,
-      "notes": "Reference: largest Qwen2.5 open model"
+      "notes": "Largest Qwen2.5 open model"
     },
     {
-      "provider": "OpenRouter",
-      "model": "Qwen3-32B",
-      "parameters": "32B",
-      "input_per_1M_tokens": 0.08,
-      "output_per_1M_tokens": 0.24,
-      "notes": "Significantly cheaper than Qwen2.5-32B; 8 providers on OpenRouter"
-    },
-    {
-      "provider": "DeepInfra",
-      "model": "Qwen3-32B",
-      "parameters": "32B",
-      "input_per_1M_tokens": 0.10,
-      "output_per_1M_tokens": 0.30,
-      "notes": "FP8 quantization"
-    },
-    {
-      "provider": "Together AI",
-      "model": "Qwen3-32B",
-      "parameters": "32B",
-      "input_per_1M_tokens": 0.08,
-      "output_per_1M_tokens": 0.08,
-      "notes": "Together AI flat-rate pricing"
-    },
-    {
-      "provider": "Qwen Official API",
-      "model": "Qwen3-8B",
+      "provider": "Qwen API",
+      "model": "Qwen3 8B",
       "parameters": "8B",
       "input_per_1M_tokens": 0.05,
       "output_per_1M_tokens": 0.20,
       "notes": "Via Alibaba Cloud / Qwen API"
     },
     {
-      "provider": "Fireworks AI",
-      "model": "Qwen3-8B",
-      "parameters": "8B",
-      "input_per_1M_tokens": 0.10,
-      "output_per_1M_tokens": 0.10,
-      "notes": "Fireworks serverless (blended $0.20)"
-    },
-    {
-      "provider": "Qwen Official API",
-      "model": "Qwen3-30B-A3B",
-      "parameters": "30B (MoE, 3B active)",
+      "provider": "OpenRouter",
+      "model": "Qwen3 32B",
+      "parameters": "32B",
       "input_per_1M_tokens": 0.08,
-      "output_per_1M_tokens": 0.28,
-      "notes": "MoE variant; closest to Qwen3 4B active params"
+      "output_per_1M_tokens": 0.24,
+      "notes": "Significantly cheaper than Qwen2.5 32B"
     },
     {
       "provider": "DeepInfra",
-      "model": "Qwen3.5-4B (non-reasoning)",
+      "model": "Qwen3.5 4B",
       "parameters": "4B",
       "input_per_1M_tokens": 0.03,
       "output_per_1M_tokens": 0.15,
       "notes": "Qwen 3.5 generation, smallest practical size"
     },
     {
-      "provider": "Qwen Official API",
-      "model": "Qwen3.5-35B-A3B",
-      "parameters": "35B (MoE, 3B active)",
-      "input_per_1M_tokens": 0.163,
-      "output_per_1M_tokens": 0.90,
-      "notes": "MoE architecture; 6 providers on OpenRouter"
-    },
-    {
       "provider": "OpenRouter",
-      "model": "Qwen3.5-9B",
+      "model": "Qwen3.5 9B",
       "parameters": "9B",
       "input_per_1M_tokens": 0.05,
       "output_per_1M_tokens": 0.15,
       "notes": "Qwen 3.5 generation mid-tier"
+    },
+    {
+      "provider": "OpenRouter",
+      "model": "Qwen3.5 35B-A3B",
+      "parameters": "35B (MoE, 3B active)",
+      "input_per_1M_tokens": 0.163,
+      "output_per_1M_tokens": 0.90,
+      "notes": "MoE architecture; 6 providers on OpenRouter"
+    }
+  ],
+
+  "open_source_models_mistral": [
+    {
+      "provider": "DeepInfra",
+      "model": "Mistral 7B Instruct",
+      "parameters": "7B",
+      "input_per_1M_tokens": 0.03,
+      "output_per_1M_tokens": 0.055,
+      "notes": "Original Mistral; widely available"
+    },
+    {
+      "provider": "Mistral AI",
+      "model": "Mixtral 8x7B Instruct",
+      "parameters": "46.7B total (12.9B active, MoE)",
+      "input_per_1M_tokens": 0.14,
+      "output_per_1M_tokens": 0.42,
+      "notes": "Cheapest via Mistral API; DeepInfra $0.45/$0.45"
+    },
+    {
+      "provider": "DeepInfra",
+      "model": "Mistral Nemo 12B",
+      "parameters": "12B",
+      "input_per_1M_tokens": 0.02,
+      "output_per_1M_tokens": 0.04,
+      "notes": "Very cheap for a 12B model"
+    },
+    {
+      "provider": "Mistral AI",
+      "model": "Mistral Small 3.1 24B",
+      "parameters": "24B",
+      "input_per_1M_tokens": 0.10,
+      "output_per_1M_tokens": 0.30,
+      "notes": "Also available on Together AI at same price"
+    },
+    {
+      "provider": "Mistral AI",
+      "model": "Mistral Large 2 123B",
+      "parameters": "123B",
+      "input_per_1M_tokens": 2.00,
+      "output_per_1M_tokens": 6.00,
+      "notes": "Only available via Mistral API"
+    }
+  ],
+
+  "open_source_models_phi": [
+    {
+      "provider": "OpenRouter",
+      "model": "Phi-3 Mini",
+      "parameters": "3.8B",
+      "input_per_1M_tokens": 0.10,
+      "output_per_1M_tokens": 0.10,
+      "notes": "May be free on some OpenRouter providers with rate limits"
+    },
+    {
+      "provider": "OpenRouter",
+      "model": "Phi-3 Medium",
+      "parameters": "14B",
+      "input_per_1M_tokens": 0.17,
+      "output_per_1M_tokens": 0.68,
+      "notes": "OpenRouter pricing"
+    },
+    {
+      "provider": "OpenRouter",
+      "model": "Phi-4 14B",
+      "parameters": "14B",
+      "input_per_1M_tokens": 0.065,
+      "output_per_1M_tokens": 0.14,
+      "notes": "Very competitive for a 14B model"
+    }
+  ],
+
+  "open_source_models_deepseek": [
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek Coder 7B",
+      "parameters": "7B",
+      "input_per_1M_tokens": 0.20,
+      "output_per_1M_tokens": 0.20,
+      "notes": "Via DeepSeek API"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek Coder 33B Instruct",
+      "parameters": "33B",
+      "input_per_1M_tokens": 0.80,
+      "output_per_1M_tokens": 0.80,
+      "notes": "Via DeepSeek API"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek V3",
+      "parameters": "671B (MoE)",
+      "input_per_1M_tokens": 0.014,
+      "output_per_1M_tokens": 0.028,
+      "notes": "DeepSeek API; extraordinarily cheap for frontier-class. DeepInfra: $0.27/$1.10"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek R1",
+      "parameters": "671B (MoE)",
+      "input_per_1M_tokens": 0.55,
+      "output_per_1M_tokens": 2.19,
+      "notes": "Reasoning model; DeepSeek API"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek R1 Distill Qwen 1.5B",
+      "parameters": "1.5B",
+      "input_per_1M_tokens": 0.18,
+      "output_per_1M_tokens": 0.18,
+      "notes": "Smallest R1 distillation"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek R1 Distill Llama 8B",
+      "parameters": "8B",
+      "input_per_1M_tokens": 0.04,
+      "output_per_1M_tokens": 0.04,
+      "notes": "Llama-based R1 distillation"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek R1 Distill Qwen 7B",
+      "parameters": "7B",
+      "input_per_1M_tokens": 0.20,
+      "output_per_1M_tokens": 0.20,
+      "notes": "Qwen-based R1 distillation"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek R1 Distill Qwen 14B",
+      "parameters": "14B",
+      "input_per_1M_tokens": 0.15,
+      "output_per_1M_tokens": 0.15,
+      "notes": "Qwen-based R1 distillation"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek R1 Distill Qwen 32B",
+      "parameters": "32B",
+      "input_per_1M_tokens": 0.29,
+      "output_per_1M_tokens": 0.29,
+      "notes": "Qwen-based R1 distillation"
+    },
+    {
+      "provider": "DeepSeek",
+      "model": "DeepSeek R1 Distill Llama 70B",
+      "parameters": "70B",
+      "input_per_1M_tokens": 0.70,
+      "output_per_1M_tokens": 0.80,
+      "notes": "Largest R1 distillation"
+    }
+  ],
+
+  "open_source_models_codellama": [
+    {
+      "provider": "Together AI",
+      "model": "CodeLlama 7B",
+      "parameters": "7B",
+      "input_per_1M_tokens": 0.20,
+      "output_per_1M_tokens": 0.20,
+      "notes": "Declining availability; superseded by newer coding models"
+    },
+    {
+      "provider": "Together AI",
+      "model": "CodeLlama 13B",
+      "parameters": "13B",
+      "input_per_1M_tokens": 0.22,
+      "output_per_1M_tokens": 0.22,
+      "notes": "Declining availability"
+    },
+    {
+      "provider": "Fireworks AI",
+      "model": "CodeLlama 34B Instruct",
+      "parameters": "34B",
+      "input_per_1M_tokens": 0.90,
+      "output_per_1M_tokens": 0.90,
+      "notes": "Fireworks large-model tier"
+    },
+    {
+      "provider": "Together AI",
+      "model": "CodeLlama 70B",
+      "parameters": "70B",
+      "input_per_1M_tokens": 0.90,
+      "output_per_1M_tokens": 0.90,
+      "notes": "Declining availability"
     }
   ],
 
   "closed_source_comparison": [
-    {
-      "provider": "Anthropic",
-      "model": "Claude Haiku 4.5",
-      "input_per_1M_tokens": 1.00,
-      "output_per_1M_tokens": 5.00,
-      "notes": "Fastest/cheapest Claude tier"
-    },
-    {
-      "provider": "Anthropic",
-      "model": "Claude Sonnet 4.6",
-      "input_per_1M_tokens": 3.00,
-      "output_per_1M_tokens": 15.00,
-      "notes": "Mid-tier; 1M context at standard pricing"
-    },
-    {
-      "provider": "Anthropic",
-      "model": "Claude Opus 4.6",
-      "input_per_1M_tokens": 5.00,
-      "output_per_1M_tokens": 25.00,
-      "notes": "Most capable Claude; 1M context at standard pricing"
-    },
     {
       "provider": "OpenAI",
       "model": "GPT-4o-mini",
       "input_per_1M_tokens": 0.15,
       "output_per_1M_tokens": 0.60,
       "notes": "16x cheaper than GPT-4o"
-    },
-    {
-      "provider": "OpenAI",
-      "model": "GPT-4o",
-      "input_per_1M_tokens": 2.50,
-      "output_per_1M_tokens": 10.00,
-      "notes": "Standard pricing as of Jan 2026"
-    },
-    {
-      "provider": "Google",
-      "model": "Gemini 2.5 Flash",
-      "input_per_1M_tokens": 0.30,
-      "output_per_1M_tokens": 2.50,
-      "notes": "Best value Google model"
     },
     {
       "provider": "Google",
@@ -239,10 +411,45 @@
     },
     {
       "provider": "Google",
+      "model": "Gemini 2.5 Flash",
+      "input_per_1M_tokens": 0.30,
+      "output_per_1M_tokens": 2.50,
+      "notes": "Best value Google model"
+    },
+    {
+      "provider": "Anthropic",
+      "model": "Claude Haiku 4.5",
+      "input_per_1M_tokens": 1.00,
+      "output_per_1M_tokens": 5.00,
+      "notes": "Fastest/cheapest Claude tier"
+    },
+    {
+      "provider": "OpenAI",
+      "model": "GPT-4o",
+      "input_per_1M_tokens": 2.50,
+      "output_per_1M_tokens": 10.00,
+      "notes": "Standard pricing as of Jan 2026"
+    },
+    {
+      "provider": "Google",
       "model": "Gemini 2.5 Pro",
       "input_per_1M_tokens": 1.25,
       "output_per_1M_tokens": 10.00,
-      "notes": "<=200K context; doubles for >200K context ($2.50/$15.00)"
+      "notes": "<=200K context; doubles for >200K context"
+    },
+    {
+      "provider": "Anthropic",
+      "model": "Claude Sonnet 4.6",
+      "input_per_1M_tokens": 3.00,
+      "output_per_1M_tokens": 15.00,
+      "notes": "Mid-tier; 1M context"
+    },
+    {
+      "provider": "Anthropic",
+      "model": "Claude Opus 4.6",
+      "input_per_1M_tokens": 5.00,
+      "output_per_1M_tokens": 25.00,
+      "notes": "Most capable Claude; 1M context"
     },
     {
       "provider": "Google",
@@ -250,6 +457,27 @@
       "input_per_1M_tokens": 0.50,
       "output_per_1M_tokens": 3.00,
       "notes": "Preview pricing; may change at GA"
+    },
+    {
+      "provider": "Mistral AI",
+      "model": "Mistral Large 2",
+      "input_per_1M_tokens": 2.00,
+      "output_per_1M_tokens": 6.00,
+      "notes": "123B parameters; Mistral API only"
+    },
+    {
+      "provider": "Cohere",
+      "model": "Command R",
+      "input_per_1M_tokens": 0.15,
+      "output_per_1M_tokens": 0.60,
+      "notes": "35B; Cohere API only"
+    },
+    {
+      "provider": "Cohere",
+      "model": "Command R+",
+      "input_per_1M_tokens": 2.50,
+      "output_per_1M_tokens": 10.00,
+      "notes": "104B; Cohere API only"
     }
   ],
 
