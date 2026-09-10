@@ -1,0 +1,1167 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-10",
+  "currency": "USD",
+  "unit": "per-million-tokens",
+  "methodology": "Reviewed provider-published text rates. No runtime price requests. Advertised starting prices are scenarios, not guaranteed routing or invoices. Historical mappings have no active rates.",
+  "models": [
+    {
+      "id": "or-qwen36-35b",
+      "modelId": "qwen/qwen3.6-35b-a3b",
+      "name": "Qwen 3.6 35B A3B",
+      "provider": "OpenRouter",
+      "aliases": [
+        "qwen3.6:35B",
+        "qwen3.6:35b"
+      ],
+      "comparison": "same-model",
+      "status": "verified",
+      "verifiedAt": "2026-09-10",
+      "rates": {
+        "input": 0.05,
+        "output": 0.7,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://openrouter.ai/qwen/qwen3.6-35b-a3b/pricing",
+      "mappingSource": "https://ollama.com/library/qwen3.6:35b",
+      "notes": "Matches Ollama qwen3.6:35b (35B A3B, Q4_K_M at verification). Advertised OpenRouter starting rates, not a guaranteed host or quantization match. Cache prices are unverified."
+    },
+    {
+      "id": "alibaba-qwen36-us",
+      "modelId": "qwen3.6-35b-a3b",
+      "name": "Qwen 3.6 35B A3B",
+      "provider": "Alibaba Cloud · US (Virginia)",
+      "region": "US (Virginia), global deployment",
+      "aliases": [],
+      "comparison": "same-model",
+      "status": "verified",
+      "verifiedAt": "2026-09-10",
+      "rates": {
+        "input": 0.248,
+        "output": 1.485,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://www.alibabacloud.com/help/en/model-studio/qwen3-6-35b-a3b",
+      "notes": "Direct Model Studio US (Virginia) rates. Context caching is unsupported; choose no API cache discount when importing cached usage. Thinking output is included. Context and regional access limits apply."
+    },
+    {
+      "id": "or-gemma4-31b",
+      "modelId": "google/gemma-4-31b-it",
+      "name": "Gemma 4 31B",
+      "provider": "OpenRouter",
+      "aliases": [
+        "gemma4:31b"
+      ],
+      "comparison": "same-model",
+      "rates": {
+        "input": 0.09,
+        "output": 0.34,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://openrouter.ai/google/gemma-4-31b-it/pricing",
+      "notes": "Advertised starting rates. Routing, selected host, context limits and quantization can change the price. Cache rates are not verified. Google AI Studio has no paid Gemma tier.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "or-qwen35-35b",
+      "modelId": "qwen/qwen3.5-35b-a3b",
+      "name": "Qwen 3.5 35B A3B",
+      "provider": "OpenRouter",
+      "aliases": [
+        "qwen3.5:35b-a3b"
+      ],
+      "comparison": "same-model",
+      "rates": {
+        "input": 0.08,
+        "output": 0.75,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://openrouter.ai/qwen/qwen3.5-35b-a3b/pricing",
+      "notes": "Advertised starting rates, not a guaranteed routing price. Select or verify the actual host before purchasing. Cache rates are not verified.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "openai-luna",
+      "modelId": "gpt-5.6-luna",
+      "name": "GPT-5.6 Luna",
+      "provider": "OpenAI",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 0.2,
+        "output": 1.2,
+        "cacheRead": 0.02,
+        "cacheWrite": 0.25
+      },
+      "maxStandardPrompt": 272000,
+      "longContextMultipliers": {"input": 2, "output": 1.5, "cacheRead": 2, "cacheWrite": 2},
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+      "notes": "Standard text pricing shown. Above 272K input tokens per request: 2× input/cache rates and 1.5× output. Unknown request sizes use a scenario range, not a verified bill. Tool fees are excluded.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "openai-terra",
+      "modelId": "gpt-5.6-terra",
+      "name": "GPT-5.6 Terra",
+      "provider": "OpenAI",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5
+      },
+      "maxStandardPrompt": 272000,
+      "longContextMultipliers": {"input": 2, "output": 1.5, "cacheRead": 2, "cacheWrite": 2},
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
+      "notes": "Standard text pricing shown. Above 272K input tokens per request: 2× input/cache rates and 1.5× output. Unknown request sizes use a scenario range, not a verified bill. Tool fees are excluded.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "openai-astra",
+      "modelId": "gpt-6-astra",
+      "name": "GPT-6 Astra",
+      "provider": "OpenAI",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 10,
+        "output": 50,
+        "cacheRead": 1,
+        "cacheWrite": 12.5
+      },
+      "maxStandardPrompt": 272000,
+      "longContextMultipliers": {"input": 2, "output": 1.5, "cacheRead": 2, "cacheWrite": 2},
+      "source": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+      "notes": "Standard text pricing shown. Above 272K input tokens per request: 2× input/cache rates and 1.5× output. Unknown request sizes use a scenario range, not a verified bill. Tool fees are excluded.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "claude-haiku45",
+      "modelId": "claude-haiku-4-5",
+      "name": "Claude Haiku 4.5",
+      "provider": "Anthropic",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 1,
+        "output": 5,
+        "cacheRead": 0.1,
+        "cacheWrite": 1.25
+      },
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "notes": "Direct API standard text rates, including 5-minute cache writes. One-hour cache storage and regional premiums require custom pricing.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "claude-sonnet5",
+      "modelId": "claude-sonnet-5",
+      "name": "Claude Sonnet 5",
+      "provider": "Anthropic",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 2,
+        "output": 10,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5
+      },
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "notes": "Direct API standard rates and 5-minute cache writes. Tokenizers differ; same-token estimates do not predict equivalent work.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "claude-opus5",
+      "modelId": "claude-opus-5",
+      "name": "Claude Opus 5",
+      "provider": "Anthropic",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 5,
+        "output": 25,
+        "cacheRead": 0.5,
+        "cacheWrite": 6.25
+      },
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "notes": "Direct API standard rates and 5-minute cache writes. Partner-cloud and one-hour cache rates differ.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "claude-sonnet46",
+      "modelId": "claude-sonnet-4-6",
+      "name": "Claude Sonnet 4.6",
+      "provider": "Anthropic",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 3,
+        "output": 15,
+        "cacheRead": 0.3,
+        "cacheWrite": 3.75
+      },
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "notes": "Retained older-model comparison. Direct API standard rates and 5-minute cache writes.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "google-flash38",
+      "modelId": "gemini-3.8-flash",
+      "name": "Gemini 3.8 Flash",
+      "provider": "Google",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 0.75,
+        "output": 3.75,
+        "cacheRead": 0.075,
+        "cacheWrite": null
+      },
+      "schedule": [
+        {
+          "from": "2027-01-01",
+          "rates": {
+            "input": 1.5,
+            "output": 7.5,
+            "cacheRead": 0.15,
+            "cacheWrite": null
+          }
+        }
+      ],
+      "source": "https://ai.google.dev/gemini-api/docs/pricing?hl=en",
+      "notes": "Promotional standard text rates through 2026-12-31; listed rates double 2027-01-01. Cache storage charges, tools and non-text modalities excluded.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "google-flashlite35",
+      "modelId": "gemini-3.5-flash-lite",
+      "name": "Gemini 3.5 Flash-Lite",
+      "provider": "Google",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 0.3,
+        "output": 2.5,
+        "cacheRead": 0.03,
+        "cacheWrite": null
+      },
+      "source": "https://ai.google.dev/gemini-api/docs/pricing?hl=en",
+      "notes": "Standard text token charges only. Cache storage and tool charges are excluded.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "google-flash3",
+      "modelId": "gemini-3-flash-preview",
+      "name": "Gemini 3 Flash Preview (legacy)",
+      "provider": "Google",
+      "aliases": [],
+      "comparison": "alternative",
+      "rates": {
+        "input": 0.5,
+        "output": 3,
+        "cacheRead": 0.05,
+        "cacheWrite": null
+      },
+      "source": "https://ai.google.dev/gemini-api/docs/pricing?hl=en",
+      "notes": "Legacy preview model; verify endpoint availability before using. Corrected standard text rates. Cache storage and tools excluded.",
+      "status": "verified",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "id": "historical-0",
+      "modelId": "gemma4",
+      "name": "Gemma 4 31B",
+      "provider": "Google AI Studio",
+      "aliases": [
+        "gemma4"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-1",
+      "modelId": "gemma3:27b",
+      "name": "Gemma 3 27B",
+      "provider": "OpenRouter",
+      "aliases": [
+        "gemma3:27b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-2",
+      "modelId": "qwen2.5:3b-instruct",
+      "name": "Qwen3.5 4B (closest)",
+      "provider": "DeepInfra",
+      "aliases": [
+        "qwen2.5:3b-instruct"
+      ],
+      "comparison": "alternative",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing. Original caveat: Qwen2.5 3B not hosted; using Qwen3.5 4B as nearest"
+    },
+    {
+      "id": "historical-3",
+      "modelId": "qwen2.5:7b-instruct",
+      "name": "Qwen2.5 7B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "qwen2.5:7b-instruct"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-4",
+      "modelId": "qwen2.5:14b-instruct",
+      "name": "Qwen2.5 14B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "qwen2.5:14b-instruct"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-5",
+      "modelId": "qwen2.5:32b-instruct",
+      "name": "Qwen2.5 32B",
+      "provider": "OpenRouter",
+      "aliases": [
+        "qwen2.5:32b-instruct"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-6",
+      "modelId": "qwen3:4b-instruct",
+      "name": "Qwen3 8B (nearest)",
+      "provider": "Qwen API",
+      "aliases": [
+        "qwen3:4b-instruct"
+      ],
+      "comparison": "alternative",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing. Original caveat: Qwen3 4B not widely hosted; using 8B pricing"
+    },
+    {
+      "id": "historical-7",
+      "modelId": "qwen3:32b",
+      "name": "Qwen3 32B",
+      "provider": "OpenRouter",
+      "aliases": [
+        "qwen3:32b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-8",
+      "modelId": "llama3:8b",
+      "name": "Llama 3 8B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3:8b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-9",
+      "modelId": "llama3",
+      "name": "Llama 3 8B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-10",
+      "modelId": "llama3:70b",
+      "name": "Llama 3 70B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3:70b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-11",
+      "modelId": "llama3.1:8b",
+      "name": "Llama 3.1 8B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3.1:8b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-12",
+      "modelId": "llama3.1",
+      "name": "Llama 3.1 8B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3.1"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-13",
+      "modelId": "llama3.1:70b",
+      "name": "Llama 3.1 70B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3.1:70b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-14",
+      "modelId": "llama3.1:405b",
+      "name": "Llama 3.1 405B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3.1:405b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-15",
+      "modelId": "llama3.2:1b",
+      "name": "Llama 3.2 1B",
+      "provider": "Fireworks AI",
+      "aliases": [
+        "llama3.2:1b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-16",
+      "modelId": "llama3.2:3b",
+      "name": "Llama 3.2 3B",
+      "provider": "Together AI",
+      "aliases": [
+        "llama3.2:3b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-17",
+      "modelId": "llama3.3:70b",
+      "name": "Llama 3.3 70B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3.3:70b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-18",
+      "modelId": "llama3.3",
+      "name": "Llama 3.3 70B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama3.3"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-19",
+      "modelId": "llama4:scout",
+      "name": "Llama 4 Scout",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama4:scout"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-20",
+      "modelId": "llama4:maverick",
+      "name": "Llama 4 Maverick",
+      "provider": "DeepInfra",
+      "aliases": [
+        "llama4:maverick"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-21",
+      "modelId": "mistral:7b",
+      "name": "Mistral 7B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "mistral:7b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-22",
+      "modelId": "mistral",
+      "name": "Mistral 7B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "mistral"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-23",
+      "modelId": "mixtral:8x7b",
+      "name": "Mixtral 8x7B",
+      "provider": "Mistral AI",
+      "aliases": [
+        "mixtral:8x7b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-24",
+      "modelId": "mistral-nemo",
+      "name": "Mistral Nemo 12B",
+      "provider": "DeepInfra",
+      "aliases": [
+        "mistral-nemo"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-25",
+      "modelId": "mistral-small",
+      "name": "Mistral Small 24B",
+      "provider": "Mistral AI",
+      "aliases": [
+        "mistral-small"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-26",
+      "modelId": "phi3:mini",
+      "name": "Phi-3 Mini",
+      "provider": "OpenRouter",
+      "aliases": [
+        "phi3:mini"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-27",
+      "modelId": "phi3:medium",
+      "name": "Phi-3 Medium",
+      "provider": "OpenRouter",
+      "aliases": [
+        "phi3:medium"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-28",
+      "modelId": "phi4",
+      "name": "Phi-4 14B",
+      "provider": "OpenRouter",
+      "aliases": [
+        "phi4"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-29",
+      "modelId": "deepseek-coder:6.7b",
+      "name": "DeepSeek Coder 7B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-coder:6.7b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-30",
+      "modelId": "deepseek-coder:33b",
+      "name": "DeepSeek Coder 33B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-coder:33b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-31",
+      "modelId": "deepseek-v3",
+      "name": "DeepSeek V3",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-v3"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing. Original caveat: DeepSeek API direct; 3rd-party providers much more expensive"
+    },
+    {
+      "id": "historical-32",
+      "modelId": "deepseek-r1:1.5b",
+      "name": "DeepSeek R1 Distill 1.5B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-r1:1.5b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-33",
+      "modelId": "deepseek-r1:7b",
+      "name": "DeepSeek R1 Distill 7B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-r1:7b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-34",
+      "modelId": "deepseek-r1:8b",
+      "name": "DeepSeek R1 Distill Llama 8B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-r1:8b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-35",
+      "modelId": "deepseek-r1:14b",
+      "name": "DeepSeek R1 Distill 14B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-r1:14b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-36",
+      "modelId": "deepseek-r1:32b",
+      "name": "DeepSeek R1 Distill 32B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-r1:32b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-37",
+      "modelId": "deepseek-r1:70b",
+      "name": "DeepSeek R1 Distill 70B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-r1:70b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-38",
+      "modelId": "deepseek-r1",
+      "name": "DeepSeek R1 Distill 7B",
+      "provider": "DeepSeek",
+      "aliases": [
+        "deepseek-r1"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-39",
+      "modelId": "codellama:7b",
+      "name": "CodeLlama 7B",
+      "provider": "Together AI",
+      "aliases": [
+        "codellama:7b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-40",
+      "modelId": "codellama",
+      "name": "CodeLlama 7B",
+      "provider": "Together AI",
+      "aliases": [
+        "codellama"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-41",
+      "modelId": "codellama:13b",
+      "name": "CodeLlama 13B",
+      "provider": "Together AI",
+      "aliases": [
+        "codellama:13b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-42",
+      "modelId": "codellama:34b",
+      "name": "CodeLlama 34B",
+      "provider": "Fireworks AI",
+      "aliases": [
+        "codellama:34b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    },
+    {
+      "id": "historical-43",
+      "modelId": "codellama:70b",
+      "name": "CodeLlama 70B",
+      "provider": "Together AI",
+      "aliases": [
+        "codellama:70b"
+      ],
+      "comparison": "same-model",
+      "status": "needs-review",
+      "verifiedAt": "2026-04-15",
+      "rates": {
+        "input": null,
+        "output": null,
+        "cacheRead": null,
+        "cacheWrite": null
+      },
+      "source": "https://github.com/CadenGithubB/OpenClaw_Cost_Comparison/blob/f5fbe5e/llm_api_pricing_april_2026.json",
+      "notes": "Historical mapping preserved for recognition only. Its old rates are not used. Verify the exact hosted model and enter current custom pricing."
+    }
+  ]
+}

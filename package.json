@@ -1,0 +1,16 @@
+{
+  "name": "openclaw-cost-comparison",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "test": "node --test tests/core.test.mjs tests/catalog.test.mjs",
+    "catalog:refresh": "node scripts/refresh-catalog.mjs",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "engines": { "node": ">=22" },
+  "devDependencies": { "playwright": "1.62.1" }
+}

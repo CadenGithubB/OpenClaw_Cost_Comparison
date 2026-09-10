@@ -1,0 +1,6 @@
+node_modules/
+.claude/
+.sites-runtime/
+test-results/
+playwright-report/
+.DS_Store

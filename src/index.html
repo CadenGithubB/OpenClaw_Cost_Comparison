@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-{{SCRIPT_HASH}}'; style-src 'sha256-{{STYLE_HASH}}'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Compare OpenClaw token usage with hosted model prices and transparent hardware scenarios. Private, offline, and dependency-free in your browser.">
+  <title>OpenClaw Cost Comparison</title>
+  <style>{{STYLES}}</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to calculator</a>
+<main id="main">
+  <header><div><p class="eyebrow">LOCAL USAGE · CLOUD PRICING</p><h1><span>OpenClaw</span> Cost Comparison</h1><p>Compare the cost of your token volume, with the assumptions in view.</p></div><span class="badge">Runs offline</span></header>
+  <div class="privacy">Your usage stays in this page. Imports are processed locally and are not saved or uploaded. Pricing is bundled; source links open only when you choose them.</div>
+  <section class="panel" aria-labelledby="importTitle" id="dropZone">
+    <div class="section-head"><h2 id="importTitle">1. Import usage</h2><span class="meta" id="importStatus" role="status"></span></div>
+    <p>Choose or drop a JSON export from <strong>OpenClaw Control UI → Usage</strong>, or paste it below. Up to 10 MB.</p>
+    <label class="sr-only" for="jsonInput">OpenClaw usage JSON</label>
+    <textarea id="jsonInput" spellcheck="false" placeholder='{"startDate":"2026-09-01","endDate":"2026-09-07","aggregates":{"byModel":[...]}}'></textarea>
+    <div class="actions"><button id="analyze" class="primary">Analyze usage</button><label class="button" for="fileInput">Choose JSON file</label><input id="fileInput" class="file-input" type="file" accept=".json,application/json"><button id="demo">Load synthetic demo</button><button id="reset" class="quiet">Reset</button></div>
+    <p id="error" class="error" role="alert" hidden></p>
+    <details><summary>Supported export formats</summary><p>Use an export containing <code>aggregates.byModel</code>, <code>modelUsage</code>, or sessions with <code>usage.modelUsage</code>. The <code>sessions.usage</code> Gateway response includes per-model aggregates. The <code>gateway usage-cost</code> summary alone does not.</p><p>Only token counts, model/provider names, dates, request counts and recorded costs are used. Phone numbers, session names, paths and other metadata are discarded from the report.</p></details>
+  </section>
+  <div id="results" hidden>
+    <section class="panel" aria-labelledby="scopeTitle">
+      <div class="section-head"><h2 id="scopeTitle">2. Set the comparison</h2><button id="export">Export report JSON</button></div>
+      <div class="controls">
+        <label>Observation start<input id="startDate" type="date"></label><label>Observation end<input id="endDate" type="date"></label>
+        <label>Role filter<select id="roleFilter"><option value="All">All roles</option></select></label>
+        <label>Cache assumption<select id="cacheMode"><option value="observed">Reuse observed cache counts</option><option value="none">No API cache discount</option></select></label>
+      </div>
+      <div class="controls" id="contextControls">
+        <label>Context pricing<select id="contextMode" aria-describedby="contextHelp"><option value="range">Show cost range (request sizes unknown)</option><option value="standard">Assume standard context</option><option value="long">Assume long context (high-cost scenario)</option><option value="limit">Use my context limit</option></select></label>
+        <label id="contextLimitLabel" hidden>Maximum input tokens per request<input id="contextLimit" type="number" min="1" step="1" value="270000" aria-describedby="contextHelp"></label>
+      </div>
+      <p class="meta" id="contextHelp">Ranges cover standard through long-context rates for groups whose request sizes are unknown; no tokens are dropped solely for that uncertainty. A declared limit applies to every compared request, including history, system instructions and tool results. It is a same-token-volume assumption, not verified history or a change to Ollama/OpenClaw. A limit above a pricing threshold keeps the range.</p>
+      <p class="meta">Dates set the denominator; they do not filter aggregate tokens. Import the matching interval. Missing activity days within it count as zero.</p>
+      <p class="meta">These are same-token-volume estimates. Tokenizers, reasoning, retries and cache hits can differ on another model. Tools, taxes, subscriptions, batch discounts and non-text billing are outside this comparison.</p>
+      <ul id="warnings" class="warnings"></ul><p id="settingsError" class="error" role="alert" hidden></p>
+    </section>
+    <div id="summaryCards" class="cards" aria-live="polite"></div>
+    <section class="panel" aria-labelledby="modelsTitle">
+      <div class="section-head"><h2 id="modelsTitle">3. Model usage & hosted estimates</h2><span class="meta" id="catalogDate"></span></div>
+      <p class="meta">Identity matches populate automatically; alternative models require your selection. Roles label usage without excluding other models. Identity is not a guarantee of identical quantization, quality or serving behavior. Search uses the bundled snapshot, not the network.</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Model usage and pricing"><table id="usageTable"><thead><tr><th scope="col">Include / model</th><th scope="col">Tokens</th><th scope="col">Role</th><th scope="col">Hosted comparison</th><th scope="col">Estimated cost</th></tr></thead><tbody></tbody></table></div>
+      <div id="roleBreakdown" class="role-cards"></div>
+    </section>
+    <section class="panel" aria-labelledby="hardwareTitle" id="hardwareSection">
+      <h2 id="hardwareTitle">4. Compare hardware costs</h2>
+      <div class="controls">
+        <label>Hardware scenario<select id="hwScenario"><option value="owned">I already own the hardware</option><option value="buy">I’m buying it for this workload</option></select></label>
+        <label>Cost allocation to selected usage (%)<input id="hwShare" type="number" min="0" max="100" value="100" step="1"></label>
+      </div>
+      <div id="purchaseFields" class="controls" hidden>
+        <label>Purchase price ($)<input id="hwPrice" type="number" min="0" value="0" step="100"></label>
+        <label>Accounting<select id="hwAccounting"><option value="purchase">One-time purchase</option><option value="depreciation">Spread over useful life</option></select></label>
+        <label id="monthsLabel" hidden>Useful life (months)<input id="hwMonths" type="number" min="1" value="36" step="1"></label>
+      </div>
+      <label class="check"><input id="elecEnabled" type="checkbox">Include electricity</label>
+      <div id="electricityFields" class="controls" hidden>
+        <label>Active power (watts)<input id="hwWatts" type="number" min="0" value="100" step="10"></label>
+        <label>Idle power (watts)<input id="hwIdle" type="number" min="0" value="0" step="5"></label>
+        <label>Active hours / day<input id="hwHours" type="number" min="0" max="24" value="8" step="0.5"></label>
+        <label>Electricity ($ / kWh)<input id="hwRate" type="number" min="0" value="0.12" step="0.01"></label>
+      </div>
+      <p class="meta">Already-owned hardware excludes its past purchase price. Allocation applies to hardware and electricity; adjust it when other workloads share the machine. Use wall power attributable to this workload. Depreciation stops at the purchase price; replacement and resale are not assumed.</p>
+      <div class="section-head"><h3>Constant-usage projection</h3><label>Horizon<select id="projectionRange"><option value="365">1 year</option><option value="730">2 years</option><option value="1095">3 years</option></select></label></div>
+      <p class="meta">Usage, selected rates and power stay constant. This is a scenario, not a forecast; promotional prices may expire. Hardware purchase and depreciation start at day zero.</p>
+      <div id="projectionPanel"></div>
+    </section>
+    <section class="panel" aria-labelledby="alternativesTitle">
+      <h2 id="alternativesTitle">Other model scenarios</h2>
+      <p>Apply a different model’s rates to the same token volume. This does not predict equal output quality or the tokens it would use.</p>
+      <div class="actions"><label>Search models or providers<input type="search" id="alternativeSearch" placeholder="e.g. Qwen3.5 4B or DeepInfra"></label><label>Model · first 100 matches<select id="alternativePicker"></select></label><button id="addAlternative">Add comparison</button></div>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Alternative model scenarios"><table id="alternativeTable"><thead><tr><th scope="col">Model / rates</th><th scope="col">Usage scope</th><th scope="col">Estimated cost</th><th scope="col">Graph / actions</th></tr></thead><tbody></tbody></table></div>
+    </section>
+  </div>
+  <details class="panel"><summary>Bundled catalog audit & attribution</summary><p id="catalogAuditSummary"></p><p class="meta">Suspicious-text checks are heuristic, not proof of safety or price accuracy. Only selected data fields are bundled; remote descriptions, links, package names and code are discarded. Missing rates are not zero. Free/local/subscription and unsupported pricing records are excluded. Source hashes and dates are included in exported reports.</p><ul id="catalogAuditReasons"></ul><details><summary>Source licenses</summary><pre id="catalogNotices"></pre></details></details>
+  <footer><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a><span>·</span><a href="https://github.com/CadenGithubB/OpenClaw_Cost_Comparison" target="_blank" rel="noopener noreferrer">Source on GitHub</a><span>USD · text-token pricing</span></footer>
+</main>
+<dialog id="pricingDialog" aria-labelledby="pricingTitle"><form id="pricingForm"><h2 id="pricingTitle">Custom pricing</h2><p id="pricingModel"></p><p class="meta">USD per million tokens. Supply a flat rate for the scenario you want to compare. Blank cache prices remain unknown.</p><div class="controls"><label>Hosted model name<input id="customName" maxlength="500" required></label><label>Provider<input id="customProvider" maxlength="500" required></label><label>Input<input id="customInput" type="number" min="0" step="any" required></label><label>Output<input id="customOutput" type="number" min="0" step="any" required></label><label>Cache read<input id="customCacheRead" type="number" min="0" step="any"></label><label>Cache write<input id="customCacheWrite" type="number" min="0" step="any"></label></div><p id="customError" class="error" role="alert" hidden></p><div class="actions"><button type="submit" class="primary">Save pricing</button><button type="button" id="cancelPricing">Cancel</button></div></form></dialog>
+<noscript><p class="error">Enable JavaScript to use this local calculator.</p></noscript>
+<script>{{SCRIPT}}</script>
+</body>
+</html>

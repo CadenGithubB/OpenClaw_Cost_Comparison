@@ -1,0 +1,13 @@
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-09-07",
+  "totals": { "totalTokens": 4900000 },
+  "aggregates": {
+    "byModel": [
+      { "provider": "ollama", "model": "gemma4:31b", "count": 100, "totals": { "input": 2000000, "output": 200000, "cacheRead": 0, "cacheWrite": 0, "totalTokens": 2200000 } },
+      { "provider": "ollama", "model": "qwen3.6:35B", "count": 80, "totals": { "input": 1500000, "output": 200000, "cacheRead": 0, "cacheWrite": 0, "totalTokens": 1700000 } },
+      { "provider": "ollama", "model": "example-custom-model", "count": 40, "totals": { "input": 900000, "output": 100000, "cacheRead": 0, "cacheWrite": 0, "totalTokens": 1000000 } }
+    ],
+    "daily": [ { "date": "2026-09-01" }, { "date": "2026-09-04" }, { "date": "2026-09-07" } ]
+  }
+}
