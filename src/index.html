@@ -12,8 +12,7 @@
 <body>
 <a class="skip" href="#main">Skip to calculator</a>
 <main id="main">
-  <header><div><p class="eyebrow">LOCAL USAGE · CLOUD PRICING</p><h1><span>OpenClaw</span> Cost Comparison</h1><p>Compare the cost of your token volume, with the assumptions in view.</p></div><span class="badge">Runs offline</span></header>
-  <div class="privacy">Your usage stays in this page. Imports are processed locally and are not saved or uploaded. Pricing is bundled; source links open only when you choose them.</div>
+  <header><div><p class="eyebrow">LOCAL USAGE · CLOUD PRICING</p><h1><span>OpenClaw</span> Cost Comparison</h1><p>Compare the cost of your token volume, with the assumptions in view.</p><p class="workflow-note"><strong>Start here:</strong> import an OpenClaw usage export, set the dates and pricing assumptions, choose the hosted models to compare, then add hardware costs. Add other model scenarios only when you want extra lines on the chart.</p></div><span class="badge">Runs offline</span></header>
   <section class="panel" aria-labelledby="importTitle" id="dropZone">
     <div class="section-head"><h2 id="importTitle">1. Import usage</h2><span class="meta" id="importStatus" role="status"></span></div>
     <p>Choose or drop a JSON export from <strong>OpenClaw Control UI → Usage</strong>, or paste it below. Up to 10 MB.</p>
@@ -24,21 +23,26 @@
     <details><summary>Supported export formats</summary><p>Use an export containing <code>aggregates.byModel</code>, <code>modelUsage</code>, or sessions with <code>usage.modelUsage</code>. The <code>sessions.usage</code> Gateway response includes per-model aggregates. The <code>gateway usage-cost</code> summary alone does not.</p><p>Only token counts, model/provider names, dates, request counts and recorded costs are used. Phone numbers, session names, paths and other metadata are discarded from the report.</p></details>
   </section>
   <div id="results" hidden>
-    <section class="panel" aria-labelledby="scopeTitle">
-      <div class="section-head"><h2 id="scopeTitle">2. Set the comparison</h2><button id="export">Export report JSON</button></div>
-      <div class="controls">
-        <label>Observation start<input id="startDate" type="date"></label><label>Observation end<input id="endDate" type="date"></label>
-        <label>Role filter<select id="roleFilter"><option value="All">All roles</option></select></label>
-        <label>Cache assumption<select id="cacheMode"><option value="observed">Reuse observed cache counts</option><option value="none">No API cache discount</option></select></label>
-      </div>
-      <div class="controls" id="contextControls">
-        <label>Context pricing<select id="contextMode" aria-describedby="contextHelp"><option value="range">Show cost range (request sizes unknown)</option><option value="standard">Assume standard context</option><option value="long">Assume long context (high-cost scenario)</option><option value="limit">Use my context limit</option></select></label>
-        <label id="contextLimitLabel" hidden>Maximum input tokens per request<input id="contextLimit" type="number" min="1" step="1" value="270000" aria-describedby="contextHelp"></label>
-      </div>
-      <p class="meta" id="contextHelp">Ranges cover standard through long-context rates for groups whose request sizes are unknown; no tokens are dropped solely for that uncertainty. A declared limit applies to every compared request, including history, system instructions and tool results. It is a same-token-volume assumption, not verified history or a change to Ollama/OpenClaw. A limit above a pricing threshold keeps the range.</p>
-      <p class="meta">Dates set the denominator; they do not filter aggregate tokens. Import the matching interval. Missing activity days within it count as zero.</p>
-      <p class="meta">These are same-token-volume estimates. Tokenizers, reasoning, retries and cache hits can differ on another model. Tools, taxes, subscriptions, batch discounts and non-text billing are outside this comparison.</p>
-      <ul id="warnings" class="warnings"></ul><p id="settingsError" class="error" role="alert" hidden></p>
+    <section class="panel" aria-label="Filter comparison">
+      <details id="filterDetails" class="filter-details">
+        <summary><span>2. Filter comparison <span id="filterToggleHint" class="filter-toggle-hint">(Click to expand)</span></span><span id="filterSummary" class="meta"></span></summary>
+        <div class="filter-content">
+          <div class="section-head"><p class="meta">Leave these alone for a full comparison. Change them only to focus on a role or use a different cache or context assumption.</p><button id="export">Export report JSON</button></div>
+          <div class="controls">
+            <label>Observation start<input id="startDate" type="date"></label><label>Observation end<input id="endDate" type="date"></label>
+            <label>Role filter<select id="roleFilter"><option value="All">All roles</option></select></label>
+            <label>Cache assumption<select id="cacheMode"><option value="observed">Reuse observed cache counts</option><option value="none">No API cache discount</option></select></label>
+          </div>
+          <div class="controls" id="contextControls">
+            <label>Context pricing<select id="contextMode" aria-describedby="contextHelp"><option value="range">Show cost range (request sizes unknown)</option><option value="standard">Assume standard context</option><option value="long">Assume long context (high-cost scenario)</option><option value="limit">Use my context limit</option></select></label>
+            <label id="contextLimitLabel" hidden>Maximum input tokens per request<input id="contextLimit" type="number" min="1" step="1" value="270000" aria-describedby="contextHelp"></label>
+          </div>
+          <p class="meta" id="contextHelp">Ranges cover standard through long-context rates for groups whose request sizes are unknown; no tokens are dropped solely for that uncertainty. A declared limit applies to every compared request, including history, system instructions and tool results. It is a same-token-volume assumption, not verified history or a change to Ollama/OpenClaw. A limit above a pricing threshold keeps the range.</p>
+          <p class="meta">Dates set the denominator; they do not filter aggregate tokens. Import the matching interval. Missing activity days within it count as zero.</p>
+          <p class="meta">These are same-token-volume estimates. Tokenizers, reasoning, retries and cache hits can differ on another model. Tools, taxes, subscriptions, batch discounts and non-text billing are outside this comparison.</p>
+          <ul id="warnings" class="warnings"></ul><p id="settingsError" class="error" role="alert" hidden></p>
+        </div>
+      </details>
     </section>
     <div id="summaryCards" class="cards" aria-live="polite"></div>
     <section class="panel" aria-labelledby="modelsTitle">
@@ -72,7 +76,7 @@
     </section>
     <section class="panel" aria-labelledby="alternativesTitle">
       <h2 id="alternativesTitle">Other model scenarios</h2>
-      <p>Apply a different model’s rates to the same token volume. This does not predict equal output quality or the tokens it would use.</p>
+      <p>Apply a different model’s rates to the same token volume. Add a scenario, then select Show in graph to draw its purple line. This does not predict equal output quality or the tokens it would use.</p>
       <div class="actions"><label>Search models or providers<input type="search" id="alternativeSearch" placeholder="e.g. Qwen3.5 4B or DeepInfra"></label><label>Model · first 100 matches<select id="alternativePicker"></select></label><button id="addAlternative">Add comparison</button></div>
       <div class="table-wrap" tabindex="0" role="region" aria-label="Alternative model scenarios"><table id="alternativeTable"><thead><tr><th scope="col">Model / rates</th><th scope="col">Usage scope</th><th scope="col">Estimated cost</th><th scope="col">Graph / actions</th></tr></thead><tbody></tbody></table></div>
     </section>

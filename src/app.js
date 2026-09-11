@@ -7,6 +7,12 @@
   const costText = (low, high = low) => low === null ? 'Price unknown' : low === high ? money(low) : `${money(low)} – ${money(high)}`;
   const estimateText = estimate => costText(estimate.lowCost, estimate.highCost);
   const today = () => new Date().toISOString().slice(0,10);
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const shortDateRange = (start,end) => {
+    const parts=value=>{const [year,month,day]=value.split('-').map(Number);return{year,month,day};},a=parts(start),b=parts(end),label=date=>`${MONTHS[date.month-1]} ${date.day}`,year=date=>`’${String(date.year).slice(-2)}`;
+    if(a.year===b.year)return a.month===b.month&&a.day===b.day?`${label(a)} ${a.year}`:`${label(a)}–${label(b)} ${year(a)}`;
+    return `${label(a)} ${year(a)}–${label(b)} ${year(b)}`;
+  };
   const create = (tag, attributes = {}, ...children) => {
     const node = document.createElement(tag);
     for (const [key, value] of Object.entries(attributes)) {
@@ -50,6 +56,14 @@
     $('electricityFields').hidden = !$('elecEnabled').checked;
     $('contextLimitLabel').hidden = $('contextMode').value !== 'limit';
   }
+  function updateFilterSummary() {
+    const dates=$('startDate').value&&$('endDate').value?shortDateRange($('startDate').value,$('endDate').value):'Dates needed';
+    const role=$('roleFilter').value==='All'?'All roles':$('roleFilter').value;
+    const cache=$('cacheMode').value==='observed'?'Observed cache':'No cache discount';
+    const context={range:'Cost range',standard:'Standard context',long:'Long context'}[$('contextMode').value]??`${count(Number($('contextLimit').value))}-token limit`;
+    $('filterSummary').textContent=[dates,role,cache,context].join(' · ');
+  }
+  function updateFilterToggleHint() { $('filterToggleHint').textContent=$('filterDetails').open?'(Click to collapse)':'(Click to expand)'; }
   function showError(error, id='error') { $(id).textContent = error.message; $(id).hidden = false; }
   function invalidateInput() {
     importGeneration++;
@@ -69,6 +83,8 @@
       $('jsonInput').value = raw;
       $('startDate').value = usage.period?.start ?? '';
       $('endDate').value = usage.period?.end ?? '';
+      $('filterDetails').open = !usage.period;
+      updateFilterToggleHint();
       $('importStatus').textContent = synthetic ? 'Synthetic demo · not your usage' : `${usage.rows.length} model/provider entries imported`;
       $('results').hidden = false;
       renderModels();
@@ -169,13 +185,21 @@
     }catch(error){showError(error,'customError');}
   }
   function card(label,value,detail,tone='') { return create('div',{class:'card'},create('h3',{},label),create('div',{class:`value ${tone}`},value),create('p',{},detail)); }
-  function differenceDisplay(comparison) {
+  function differenceDisplay(comparison, unavailableDetail = 'Complete pricing and an observation interval required') {
     const {winner, lowDifference: low, highDifference: high} = comparison;
-    if (winner === 'unavailable') return {value:'Unavailable',detail:'Complete pricing and an observation interval required'};
-    if (winner === 'uncertain') return {value:'Depends on context',detail:`Hosted minus hardware: ${costText(low,high)}. The range touches or crosses equal cost; neither option is consistently cheaper.`};
+    if (winner === 'unavailable') return {value:'Unavailable',detail:unavailableDetail};
+    if (winner === 'uncertain') return {value:'Depends on context',detail:`Hosted equivalent minus local hardware: ${costText(low,high)}. The range touches or crosses equal cost; neither option is consistently cheaper.`};
     if (winner === 'equal') return {value:money(0),detail:'Scenarios are equal under these assumptions'};
     return {value:winner === 'hardware' ? costText(low,high) : costText(-high,-low),
-      detail:winner === 'hardware' ? 'Lower modeled cost with this hardware scenario across the selected range' : 'Lower modeled cost with the hosted scenario across the selected range'};
+      detail:winner === 'hardware' ? 'Lower modeled cost for local hardware and power than the hosted equivalent across the selected range' : 'Lower modeled cost for the hosted equivalent than local hardware and power across the selected range'};
+  }
+  function comparisonRequirementDetail(rows, prices, interval) {
+    const unpriced=rows.filter(row=>prices.get(row.key).lowCost===null);
+    if(unpriced.length)return 'Scroll down to Model usage & hosted estimates, then choose a like/similar priced model in the Hosted comparison column for every model marked Price unknown.';
+    if(!interval)return 'Open Filter comparison and set both observation dates before comparing against hardware.';
+    if(!rows.length)return 'Include at least one model before comparing against hardware.';
+    if(!usage.complete)return 'The imported usage is incomplete or inconsistent, so a comparison cannot be calculated.';
+    return 'Complete pricing and an observation interval are required.';
   }
   function drawProjection(rows, summary, days, hardware, canCompare, prices, alternateScenarios) {
     const host=$('projectionPanel');host.replaceChildren();
@@ -191,9 +215,10 @@
     }
     const apiLowAt=d=>summary.lowCost/days*d,apiHighAt=d=>summary.highCost/days*d,selfAt=d=>hardwareCost(hardware,d).total;
     const apiLow=apiLowAt(horizon),apiHigh=apiHighAt(horizon),self=selfAt(horizon);
-    const series=[{label:'Current hosted scenario',low:apiLow,high:apiHigh,hasRange:summary.hasRange,color:'#b3a0ff'},...alternateScenarios.map((scenario,index)=>({label:`${scenario.offer.name} · ${scenario.offer.provider}`,low:scenario.summary.lowCost/days*horizon,high:scenario.summary.highCost/days*horizon,hasRange:scenario.summary.hasRange,color:['#d3c2ff','#9c8af0','#e0a7ff','#bc91ee'][index%4]}))];
-    host.append(create('div',{class:'projection-totals'},create('span',{},'Hosted scenario: ',create('strong',{},costText(apiLow,apiHigh))),...series.slice(1).map(item=>create('span',{},`${item.label}: `,create('strong',{},costText(item.low,item.high)))),create('span',{},'Allocated hardware + power: ',create('strong',{},money(self)))));
-    host.append(create('div',{class:'projection-legend'},...series.map(item=>create('span',{},create('i',{class:'legend-swatch',style:`--line-color:${item.color}`}),item.hasRange?`${item.label} range`:item.label)),create('span',{},create('i',{class:'legend-swatch',style:'--line-color:#76dfc1'}),'Hardware + power')));
+    const alternativeColors=['#c9a7ff','#e0a7ff','#a991f4','#d9a0de'];
+    const series=[{label:'Hosted equivalent of selected local model(s)',low:apiLow,high:apiHigh,hasRange:summary.hasRange,color:'#76a7ff',swatchClass:'series-swatch--hosted'},...alternateScenarios.map((scenario,index)=>({label:`Other scenario: ${scenario.offer.name} · ${scenario.offer.provider}`,low:scenario.summary.lowCost/days*horizon,high:scenario.summary.highCost/days*horizon,hasRange:scenario.summary.hasRange,color:alternativeColors[index%alternativeColors.length],swatchClass:`series-swatch--alternative-${index%alternativeColors.length}`}))];
+    const swatch=swatchClass=>create('span',{class:`series-swatch ${swatchClass}`,'aria-hidden':'true'},'■');
+    host.append(create('div',{class:'projection-totals'},create('span',{},swatch('series-swatch--local'),'Local hardware + power: ',create('strong',{},money(self))),create('span',{},swatch(series[0].swatchClass),'Hosted equivalent: ',create('strong',{},costText(apiLow,apiHigh))),...series.slice(1).map(item=>create('span',{},swatch(item.swatchClass),`${item.label}: `,create('strong',{},costText(item.low,item.high))))));
     const svgNS='http://www.w3.org/2000/svg';
     const svg=(tag,attrs,text)=>{const node=document.createElementNS(svgNS,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));if(text!==undefined)node.textContent=text;return node;};
     const chart=svg('svg',{viewBox:'0 0 760 270',class:'plot',role:'img','aria-label':`Constant usage projection over ${horizon} days. ${series.map(item=>`${item.label} ${costText(item.low,item.high)}`).join('. ')}. Hardware and electricity ${money(self)}.`});
@@ -220,7 +245,8 @@
     if(!summary.hasRange&&hardware.scenario==='buy'&&capital>0&&cross>0&&cross<=horizon&&
       (hardware.accounting==='purchase'||cross>hardware.months*365.25/12))
       host.append(create('p',{class:'meta'},`Cost crossover: about ${Math.ceil(cross)} days under the selected assumptions.`));
-    if(summary.hasRange)host.append(create('p',{class:'meta'},'The purple band carries context-pricing uncertainty through the projection. There is no single cost-crossover date until a context scenario is selected.'));
+    if(summary.hasRange)host.append(create('p',{class:'meta'},'The blue band carries context-pricing uncertainty for the hosted equivalent. There is no single cost-crossover date until a context scenario is selected.'));
+    if(alternateScenarios.length)host.append(create('p',{class:'meta'},'The difference and crossover compare local hardware with the hosted equivalent. Purple lines are selected Other model scenarios using the same token volume.'));
     if(days<7)host.append(create('p',{class:'warn'},'Less than a week of observed usage: this projection is especially sensitive to your chosen interval.'));
     return {days:horizon,hosted:apiLow===apiHigh?apiLow:null,hostedRange:{low:apiLow,high:apiHigh},alternatives:alternateScenarios.map(scenario=>({offer:scenario.offer,scope:scenario.scope,estimatedCostRange:{low:scenario.summary.lowCost/days*horizon,high:scenario.summary.highCost/days*horizon}})),selfHosting:self,comparison,assumptions:'Constant current token rates, usage, declared context scenario and power; no hardware replacement or resale.'};
   }
@@ -250,7 +276,7 @@
   }
   function render() {
     if(!usage)return;
-    settingsVisibility();latestReport=null;$('settingsError').hidden=true;$('export').disabled=true;
+    settingsVisibility();updateFilterSummary();latestReport=null;$('settingsError').hidden=true;$('export').disabled=true;
     try{
       const interval=period($('startDate').value,$('endDate').value),hardware=readHardware();
       hardwareCost(hardware,0); // Validate even before an interval is available.
@@ -269,9 +295,9 @@
       $('warnings').replaceChildren(...[...new Set(warnings)].map(w=>create('li',{},w)));
       const hw=interval?hardwareCost(hardware,interval.days):null;
       const canCompare=summary.complete&&usage.complete&&!!interval;
-      const comparison=compareCosts(canCompare?summary.lowCost:null,canCompare?summary.highCost:null,hw?.total??0),difference=differenceDisplay(comparison);
+      const comparison=compareCosts(canCompare?summary.lowCost:null,canCompare?summary.highCost:null,hw?.total??0),difference=differenceDisplay(comparison,comparisonRequirementDetail(rows,prices,interval));
       $('summaryCards').replaceChildren(
-        card('Selected tokens',count(summary.tokens),interval?`${interval.days} calendar days · ${interval.start} to ${interval.end}`:'Observation interval unknown'),
+        card('Selected tokens',count(summary.tokens),interval?create('span',{class:'date-range',title:`${interval.start} to ${interval.end}`},`${interval.days} days · ${shortDateRange(interval.start,interval.end)}`):'Observation interval unknown'),
         card(summary.complete&&usage.complete?(summary.hasRange?'Hosted estimate range':'Hosted estimate'):'Priced subtotal',estimateText(summary),`${count(summary.pricedTokens)} / ${count(summary.tokens)} reported tokens priced${summary.coverage===null?'':` (${(summary.coverage*100).toFixed(1)}%)`}`,summary.complete?'':'warn'),
         card('Hardware + electricity',hw?money(hw.total):'Set dates',hw?`${money(hw.hardware)} hardware + ${money(hw.electricity)} electricity · ${hardware.share}% allocated`:'Enter an observation interval'),
         card('Scenario difference',difference.value,difference.detail,['unavailable','uncertain'].includes(comparison.winner)?'warn':'')
@@ -306,6 +332,7 @@
     importGeneration++;usage=null;latestReport=null;configurations=new Map();alternatives=new Map();editingKey=null;
     $('jsonInput').value='';$('fileInput').value='';$('importStatus').textContent='';$('results').hidden=true;$('error').hidden=true;
     $('pricingDialog').close();$('roleFilter').value='All';$('cacheMode').value='observed';$('contextMode').value='range';$('contextLimit').value='270000';settingsVisibility();
+    $('filterDetails').open=false;updateFilterToggleHint();$('filterSummary').textContent='';
     $('pricingForm').reset();$('pricingModel').textContent='';$('startDate').value='';$('endDate').value='';
     $('alternativeSearch').value='';
     for(const [id,value]of Object.entries({hwScenario:'owned',hwShare:'100',hwPrice:'0',hwAccounting:'purchase',hwMonths:'36',hwWatts:'100',hwIdle:'0',hwHours:'8',hwRate:'0.12',projectionRange:'365'}))$(id).value=value;
@@ -319,6 +346,7 @@
   $('catalogAuditSummary').textContent=`Scanned ${count(CATALOG.audit.scanned)} entries from three public sources. Bundled ${count(CATALOG.audit.accepted)} normalized offers; excluded ${count(CATALOG.audit.excluded)} records, merged ${count(CATALOG.audit.duplicates)} duplicates and flagged ${count(CATALOG.audit.conflicts)} price disagreements. Retrieval date: ${CATALOG.updatedAt}. This is a current snapshot, not verified historical pricing.`;
   $('catalogAuditReasons').replaceChildren(...Object.entries(CATALOG.audit.reasons).map(([reason,total])=>create('li',{},`${reason.replaceAll('-',' ')}: ${count(total)}`)));
   $('catalogNotices').textContent=CATALOG.notices;
+  $('filterDetails').addEventListener('toggle',updateFilterToggleHint);updateFilterToggleHint();
   $('alternativeSearch').addEventListener('input',()=>{if(usage)renderAlternatives();});
   $('analyze').addEventListener('click',()=>importUsage($('jsonInput').value));
   $('jsonInput').addEventListener('input',invalidateInput);

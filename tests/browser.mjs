@@ -17,7 +17,8 @@ const qwenRates=resolveMapping('qwen3.6:35B',catalog).rates;
 const qwenCost=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(qwenRates.input+qwenRates.output/10);
 const row=(model='qwen3.6:35B',provider='ollama',input=1000000,output=100000)=>({model,provider,count:10,totals:{input,output,totalTokens:input+output}});
 const data=rows=>({startDate:'2026-09-01',endDate:'2026-09-30',aggregates:{byModel:rows,daily:[{date:'2026-09-01'},{date:'2026-09-30'}]}});
-async function importData(value){await page.locator('#jsonInput').fill(JSON.stringify(value));await page.getByRole('button',{name:'Analyze usage',exact:true}).click();}
+async function importData(value){await page.locator('#jsonInput').fill(JSON.stringify(value));await page.getByRole('button',{name:'Analyze usage',exact:true}).click();await openFilters();}
+async function openFilters(){const details=page.locator('#filterDetails');if(!await details.evaluate(node=>node.open))await details.locator('summary').click();}
 async function summary(){return page.locator('#summaryCards').innerText();}
 let checks=0;
 const check=(condition,message)=>{assert.ok(condition,message);checks++;};
@@ -25,6 +26,14 @@ try{
   await page.goto(url);
   check(await page.locator('#results').isHidden(),'starts with an honest empty state');
   await page.getByRole('button',{name:'Load synthetic demo'}).click();
+  check((await page.locator('.projection-totals').innerText()).includes('Local hardware + power')&&(await page.locator('.projection-totals').innerText()).includes('Hosted equivalent'),'projection distinguishes local hardware from hosting the selected local model');
+  check(await page.locator('.projection-totals .series-swatch').count()===2,'projection totals use matching color swatches instead of a duplicate legend');
+  check(!await page.locator('#filterDetails').evaluate(node=>node.open),'filters stay collapsed when the import supplies dates');
+  check((await page.locator('#filterToggleHint').innerText()).includes('expand'),'collapsed filters clearly invite expansion');
+  check((await page.locator('#filterSummary').innerText()).includes('All roles'),'collapsed filters show the active settings');
+  check(await page.locator('#summaryCards .date-range').evaluate(node=>getComputedStyle(node).whiteSpace)==='nowrap','selected-token dates stay on one line');
+  await openFilters();
+  check((await page.locator('#filterToggleHint').innerText()).includes('collapse'),'open filters identify the reverse action');
   check((await summary()).includes('4,900,000'),'synthetic demo counts all tokens');
   check((await summary()).includes('Unavailable'),'unpriced demo model suppresses savings');
   check((await page.locator('#importStatus').innerText()).includes('Synthetic'),'demo is labeled');
@@ -53,7 +62,7 @@ try{
   check((await page.locator('#alternativeTable').innerText()).includes('$0.32 – $0.58'),'unknown per-request tiers have a full cost range');
   check((await page.locator('#alternativeTable').innerText()).includes('1,100,000 of 1,100,000 tokens priced'),'context uncertainty does not reduce coverage');
   const projectionToggle=page.getByRole('checkbox',{name:/Show .* on the projection/});check(await projectionToggle.count()===1,'each comparison has an opt-in projection checkbox');
-  await projectionToggle.check();check((await page.locator('.projection-legend').innerText()).includes('Luna'),'selected comparison is identified in the projection legend');
+  await projectionToggle.check();check((await page.locator('.projection-totals').innerText()).includes('Other scenario:')&&(await page.locator('.projection-totals').innerText()).includes('Luna'),'selected comparison is identified as an other-model scenario beside its color swatch');
   check(await page.locator('#projectionPanel svg polyline').count()>=3,'selected comparison adds its own projection line');
   await page.locator('#contextMode').selectOption('limit');check(await page.locator('#contextLimit').inputValue()==='270000','user context limit is prefilled exactly');
   check((await page.locator('#alternativeTable').innerText()).includes('$0.32')&&!(await page.locator('#alternativeTable').innerText()).includes('$0.58'),'270000 resolves the standard scenario');
@@ -84,6 +93,7 @@ try{
   check(await page.locator('#contextMode').inputValue()==='range'&&await page.locator('#contextLimit').inputValue()==='270000','reset restores range and exact context preset');
   await importData(data([row('qwen2.5:3b-instruct')]));
   check(await page.locator('#modelPicker-0').inputValue()==='','historical substitute is not automatically accepted');
+  check((await summary()).includes('like/similar priced model'),'unpriced comparison tells the user where to choose a similar hosted price');
   check((await page.locator('#projectionPanel').innerText()).includes('qwen2.5:3b-instruct'),'projection names the specific unpriced model');
   const suggested=page.locator('.suggestions button').first();check((await suggested.innerText()).includes('Use alternative:')&&(await suggested.innerText()).includes('per 1M'),'suggestion includes rates and alternative label');
   await suggested.click();check(!(await summary()).includes('Price unknown'),'accepting the priced alternative populates its cost');

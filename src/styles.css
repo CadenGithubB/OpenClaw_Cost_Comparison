@@ -12,7 +12,16 @@ p{margin:8px 0 16px}
 .eyebrow{font-size:.75rem;letter-spacing:.13em;color:var(--muted);margin:0}
 .meta,footer{font-size:.875rem;color:var(--muted)}
 .badge{border:1px solid var(--line);padding:5px 12px;border-radius:24px;font-size:.875rem;color:var(--green)}
-.privacy{border-left:3px solid var(--accent);background:#1d2134;padding:13px 18px;margin-bottom:22px;font-size:.875rem;color:#d5d1ed}
+.workflow-note{max-width:780px;margin:14px 0 0;color:#d5d1ed;font-size:.9375rem}
+.workflow-note strong{color:var(--text)}
+.filter-details{margin:0}
+.filter-details>summary{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--text);font-size:1.15rem;font-weight:650}
+.filter-details>summary .meta{font-size:.8125rem;font-weight:400}
+.filter-toggle-hint{color:var(--muted);font-size:.8125rem;font-weight:400;white-space:nowrap}
+.filter-content{padding-top:14px}
+.filter-content .section-head{margin-bottom:4px}
+.filter-content .section-head p{margin:0;max-width:700px}
+.date-range{display:inline-block;white-space:nowrap;font-size:.8125rem;letter-spacing:-.01em}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;margin:20px 0}
 textarea,input,select,button,.button{font:inherit}
 textarea,input,select{color:var(--text);background:#101522;border:1px solid #58657e;border-radius:6px;padding:9px 11px;min-width:0}
@@ -81,9 +90,9 @@ dialog::backdrop{background:#000b}
 .plot text{font:12px system-ui;fill:var(--muted)}
 .projection-totals{display:flex;flex-wrap:wrap;gap:20px;margin:16px 0}
 .projection-totals strong{color:var(--text)}
-.projection-legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:12px 0;font-size:.8125rem;color:var(--muted)}
-.projection-legend span{display:inline-flex;align-items:center;gap:7px}
-.legend-swatch{display:inline-block;width:22px;height:3px;border-radius:3px;background:var(--line-color)}
+.projection-totals>span{display:inline-flex;align-items:center;gap:7px}
+.series-swatch{display:inline-block;flex:0 0 auto;font-family:system-ui,sans-serif;font-size:16px;font-weight:700;line-height:1;color:inherit;text-shadow:0 0 1px currentColor}
+.series-swatch--local{color:#76dfc1}.series-swatch--hosted{color:#76a7ff}.series-swatch--alternative-0{color:#c9a7ff}.series-swatch--alternative-1{color:#e0a7ff}.series-swatch--alternative-2{color:#a991f4}.series-swatch--alternative-3{color:#d9a0de}
 .projection-toggle{width:max-content;margin:0 0 10px}
 @media(max-width:850px){.cards{grid-template-columns:repeat(2,1fr)}
 }
